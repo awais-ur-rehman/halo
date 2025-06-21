@@ -1,3 +1,4 @@
+// src/App.tsx
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,7 +8,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { LoginPage } from "./pages/public/login";
-import { DashboardLayout } from "./components/DashboardLayout";
+import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoutes";
 import { useAuthStore } from "./stores/authStore";
 import { ROUTES } from "./routes";
@@ -58,7 +59,7 @@ function App() {
               path="/dashboard/*"
               element={
                 <ProtectedRoute>
-                  <DashboardLayout />
+                  <Layout />
                 </ProtectedRoute>
               }
             />
