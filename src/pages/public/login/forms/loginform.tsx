@@ -21,7 +21,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto rounded-[20px] bg-white/10 border border-white/10 backdrop-blur-lg p-2">
+    <div className="w-full max-w-lg mx-auto rounded-[20px] bg-white/10 border border-white/10 p-2">
       <div className="rounded-2xl p-8">
         <div className="text-center mb-8">
           <h2 className="text-4xl font-bold text-white  mb-2">Sign In</h2>

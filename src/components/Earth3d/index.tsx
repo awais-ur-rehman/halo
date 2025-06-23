@@ -391,13 +391,14 @@ export const Earth3D = () => {
     gradientMesh.position.z = -25;
     scene.add(gradientMesh);
 
+    // Fixed camera setup for proper aspect ratio
     const camera = new THREE.PerspectiveCamera(
-      75,
+      65,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       100
     );
-    camera.position.set(12, 0, 12);
+    camera.position.set(0, 0, 0.4);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -410,37 +411,40 @@ export const Earth3D = () => {
 
     const createGalaxyStars = () => {
       const group = new THREE.Group();
-      const starCount = 400;
+      const starCount = 4000;
 
       const starTypes = [
-        { size: 0.02, color: 0xffffff, opacity: 0.9 },
-        { size: 0.04, color: 0xaaccff, opacity: 0.7 },
-        { size: 0.03, color: 0xffffaa, opacity: 0.8 },
-        { size: 0.025, color: 0xffaacc, opacity: 0.6 },
-        { size: 0.06, color: 0xccccff, opacity: 0.5 },
-        { size: 0.015, color: 0xffffff, opacity: 1.0 },
-        { size: 0.035, color: 0xccffcc, opacity: 0.65 },
-        { size: 0.05, color: 0xffccaa, opacity: 0.55 },
+        { size: 0.03, color: 0xffffff, opacity: 0.9, brightness: 1.2 },
+        { size: 0.05, color: 0xaaccff, opacity: 0.8, brightness: 1.0 },
+        { size: 0.04, color: 0xffffaa, opacity: 0.85, brightness: 1.1 },
+        { size: 0.035, color: 0xffaacc, opacity: 0.7, brightness: 0.9 },
+        { size: 0.08, color: 0xccccff, opacity: 0.6, brightness: 0.8 },
+        { size: 0.025, color: 0xffffff, opacity: 1.0, brightness: 1.3 },
+        { size: 0.045, color: 0xccffcc, opacity: 0.75, brightness: 1.0 },
+        { size: 0.07, color: 0xffccaa, opacity: 0.65, brightness: 0.85 },
       ];
 
+      // Create realistic star shapes using points or small spheres
       for (let i = 0; i < starCount; i++) {
         const starType =
           starTypes[Math.floor(Math.random() * starTypes.length)];
 
-        const starGeometry = new THREE.CircleGeometry(starType.size, 6);
+        // Create star using SphereGeometry for 3D effect
+        const starGeometry = new THREE.SphereGeometry(starType.size, 8, 6);
         const starMaterial = new THREE.MeshBasicMaterial({
           color: starType.color,
           transparent: true,
           opacity: starType.opacity,
-          blending: THREE.AdditiveBlending,
-          side: THREE.DoubleSide,
+          emissive: starType.color,
+          emissiveIntensity: starType.brightness * 0.3,
         });
 
         const star = new THREE.Mesh(starGeometry, starMaterial);
 
+        // Position stars in a sphere around the scene
         const phi = Math.random() * Math.PI * 2;
         const theta = Math.random() * Math.PI;
-        const radius = Math.random() * 20 + 10;
+        const radius = Math.random() * 25 + 15; // Increased distance range
 
         star.position.set(
           radius * Math.sin(theta) * Math.cos(phi),
@@ -449,20 +453,75 @@ export const Earth3D = () => {
         );
 
         star.userData.velocity = new THREE.Vector3(
-          (Math.random() - 0.5) * 0.003,
-          (Math.random() - 0.5) * 0.003,
-          (Math.random() - 0.5) * 0.003
+          (Math.random() - 0.5) * 0.002,
+          (Math.random() - 0.5) * 0.002,
+          (Math.random() - 0.5) * 0.002
         );
 
-        star.userData.rotationSpeed = (Math.random() - 0.5) * 0.008;
-        star.userData.twinkleSpeed = Math.random() * 0.03 + 0.01;
+        star.userData.twinkleSpeed = Math.random() * 0.02 + 0.01;
         star.userData.baseOpacity = star.material.opacity;
         star.userData.maxOpacity = star.material.opacity;
-        star.userData.minOpacity = star.material.opacity * 0.2;
+        star.userData.minOpacity = star.material.opacity * 0.3;
 
         group.add(star);
       }
 
+      // Add some brighter "star clusters" with cross-shaped glow
+      for (let i = 0; i < 50; i++) {
+        const brightStarGroup = new THREE.Group();
+
+        // Main bright star
+        const mainStar = new THREE.Mesh(
+          new THREE.SphereGeometry(0.1, 8, 6),
+          new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.9,
+            emissive: 0xffffff,
+            emissiveIntensity: 0.5,
+          })
+        );
+
+        // Add cross-shaped glow effect
+        const glowGeometry = new THREE.PlaneGeometry(0.8, 0.05);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.3,
+          blending: THREE.AdditiveBlending,
+        });
+
+        const horizontalGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+        const verticalGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+        verticalGlow.rotation.z = Math.PI / 2;
+
+        brightStarGroup.add(mainStar);
+        brightStarGroup.add(horizontalGlow);
+        brightStarGroup.add(verticalGlow);
+
+        // Position bright stars
+        const phi = Math.random() * Math.PI * 2;
+        const theta = Math.random() * Math.PI;
+        const radius = Math.random() * 30 + 20;
+
+        brightStarGroup.position.set(
+          radius * Math.sin(theta) * Math.cos(phi),
+          radius * Math.sin(theta) * Math.sin(phi),
+          radius * Math.cos(theta)
+        );
+
+        brightStarGroup.userData.velocity = new THREE.Vector3(
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001
+        );
+
+        brightStarGroup.userData.twinkleSpeed = Math.random() * 0.015 + 0.005;
+
+        group.add(brightStarGroup);
+      }
+
+      // Keep nebulae and dust as they were
       for (let i = 0; i < 30; i++) {
         const nebulaGeometry = new THREE.CircleGeometry(
           Math.random() * 0.4 + 0.15,
@@ -539,7 +598,11 @@ export const Earth3D = () => {
     const stars = createGalaxyStars();
     scene.add(stars);
 
-    const earthGeometry = new THREE.SphereGeometry(5.5, 64, 64);
+    // FIXED: Perfect circle Earth with proper proportions
+    const earthRadius = 2.4;
+    const atmosphereRadius = earthRadius * 1.15; // Only 15% larger for realistic atmosphere
+
+    const earthGeometry = new THREE.SphereGeometry(earthRadius, 64, 64); // Increased segments for smoother sphere
     const textureLoader = new THREE.TextureLoader();
 
     textureLoader.load(earthTexture, (texture) => {
@@ -553,14 +616,19 @@ export const Earth3D = () => {
       earthRef.current = earth;
       scene.add(earth);
 
-      const atmosphereGeometry = new THREE.SphereGeometry(5.8, 64, 64);
+      // FIXED: Atmosphere with correct proportional radius
+      const atmosphereGeometry = new THREE.SphereGeometry(
+        atmosphereRadius,
+        64,
+        64
+      );
       const atmosphereMaterial = new THREE.ShaderMaterial({
         uniforms: {
           time: { value: 0 },
           sunPosition: { value: new THREE.Vector3(5, 3, 5) },
           cameraPosition: { value: camera.position },
-          planetRadius: { value: 5.5 },
-          atmosphereRadius: { value: 5.8 },
+          planetRadius: { value: earthRadius }, // Updated to match actual earth radius
+          atmosphereRadius: { value: atmosphereRadius }, // Updated to match actual atmosphere radius
         },
         vertexShader: `
           uniform vec3 sunPosition;
@@ -751,22 +819,42 @@ export const Earth3D = () => {
         gradientMaterial.uniforms.time.value = time;
       }
 
+      // Enhanced star animation with proper twinkling
       stars.children.forEach((star) => {
-        star.position.add(star.userData.velocity);
-        star.rotation.z += star.userData.rotationSpeed;
+        if (star.userData.velocity) {
+          star.position.add(star.userData.velocity);
+        }
 
+        if (star.userData.rotationSpeed) {
+          star.rotation.z += star.userData.rotationSpeed;
+        }
+
+        // Enhanced twinkling for different star types
         if (star.userData.twinkleSpeed) {
           const twinkle =
             Math.sin(time * star.userData.twinkleSpeed) * 0.5 + 0.5;
-          const opacity =
-            star.userData.minOpacity +
-            (star.userData.maxOpacity - star.userData.minOpacity) * twinkle;
-          star.material.opacity = opacity;
+
+          if (star.material) {
+            // Single star
+            const opacity =
+              star.userData.minOpacity +
+              (star.userData.maxOpacity - star.userData.minOpacity) * twinkle;
+            star.material.opacity = opacity;
+          } else {
+            // Bright star group with cross glow
+            star.children.forEach((child) => {
+              if (child.material) {
+                const baseOpacity = child.material.opacity;
+                child.material.opacity = baseOpacity * (0.7 + 0.3 * twinkle);
+              }
+            });
+          }
         }
 
-        if (Math.abs(star.position.x) > 25) star.userData.velocity.x *= -1;
-        if (Math.abs(star.position.y) > 25) star.userData.velocity.y *= -1;
-        if (Math.abs(star.position.z) > 25) star.userData.velocity.z *= -1;
+        // Boundary check
+        if (Math.abs(star.position.x) > 30) star.userData.velocity.x *= -1;
+        if (Math.abs(star.position.y) > 30) star.userData.velocity.y *= -1;
+        if (Math.abs(star.position.z) > 30) star.userData.velocity.z *= -1;
       });
 
       autoRotationY.current += 0.005;
@@ -781,9 +869,6 @@ export const Earth3D = () => {
         const targetRotationZ = mouseRef.current.x * 0.05;
         earthRef.current.rotation.z +=
           (targetRotationZ - earthRef.current.rotation.z) * 0.02;
-
-        const scale = 1 + Math.sin(time * 0.2) * 0.01;
-        earthRef.current.scale.setScalar(scale);
 
         const atmosphere = earthRef.current.children.find(
           (child) => child.userData.isAtmosphere
@@ -813,6 +898,7 @@ export const Earth3D = () => {
       if (mountRef.current && renderer && camera) {
         const width = mountRef.current.clientWidth;
         const height = mountRef.current.clientHeight;
+
         renderer.setSize(width, height);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();

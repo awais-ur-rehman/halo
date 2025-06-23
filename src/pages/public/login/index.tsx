@@ -17,9 +17,12 @@ export const LoginPage = () => {
 
   return (
     <div className="h-screen w-screen">
+      <h1 className="absolute top-4 left-4 text-lg font-extrabold text-white">
+        HALO.
+      </h1>
       <div className="bg-black h-full w-full flex justify-center items-center">
         <Earth3D />
-        <div className="absolute w-[40%] right-20 flex items-center justify-center">
+        <div className="absolute bg-transparent w-[40%] right-20 flex items-center justify-center">
           <LoginForm />
         </div>
       </div>

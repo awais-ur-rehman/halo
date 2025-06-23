@@ -3,21 +3,19 @@ import {
   MapPin,
   Building2,
   RefreshCw,
-  Phone,
   Clock,
   X,
   List,
+  Star,
 } from "lucide-react";
 import { GoogleMap } from "../../../components/GoogleMap";
 import { useBranches, type Branch } from "../../../hook/useControlCenter";
 
 export const ControlCenterPage = () => {
   const {
-    branches,
     userLocation,
     loading,
     error,
-    locationPermissionDenied,
     refreshBranches,
     getBranchesByDistance,
     calculateDistance,
@@ -249,7 +247,7 @@ export const ControlCenterPage = () => {
       <div className="absolute top-8 left-25 z-[999]">
         <button
           onClick={() => setShowBranchPanel(true)}
-          className="group relative px-4 py-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl shadow-xl hover:bg-white/30 transition-all duration-300 hover:scale-105"
+          className="group relative px-4 py-3 bg-white/40 backdrop-blur-md border border-white/30 rounded-2xl shadow-xl hover:bg-white/30 transition-all duration-300 hover:scale-105"
           style={{
             background: "rgba(255, 255, 255, 0.15)",
             backdropFilter: "blur(20px)",
@@ -274,7 +272,7 @@ export const ControlCenterPage = () => {
       {showBranchPanel && (
         <>
           <div
-            className="absolute inset-0 pt-10  z-[998] transition-all duration-300"
+            className="absolute inset-0   z-[998] transition-all duration-300"
             onClick={() => setShowBranchPanel(false)}
           />
 
@@ -282,12 +280,12 @@ export const ControlCenterPage = () => {
             <div
               className="h-full relative overflow-hidden"
               style={{
-                background: "rgba(255, 255, 255, 0.5)",
+                background: "rgba(255, 255, 255, 0.7)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
               }}
             >
-              <div className="relative p-6 border-b border-white/20">
-                <div className="flex items-center justify-between p-4">
+              <div className="relative p-4 border-b border-white/20">
+                <div className="flex items-center justify-between p-2">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">
                       Nearby Branches
@@ -391,11 +389,11 @@ export const ControlCenterPage = () => {
                         </p>
                       </div>
 
-                      {branch.phone && (
+                      {branch.rating && (
                         <div className="flex items-center space-x-2 mb-2">
-                          <Phone className="w-4 h-4 text-gray-500" />
+                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
                           <p className="text-sm text-gray-700">
-                            {branch.phone}
+                            {branch.rating}/5
                           </p>
                         </div>
                       )}
