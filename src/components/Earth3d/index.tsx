@@ -302,14 +302,15 @@
 //   return (
 //     <div
 //       ref={mountRef}
-//       className="w-full h-full flex justify-end items-end rounded-[12px] overflow-hidden bg-black"
+//       className="w-full h-full flex justify-center items-center overflow-hidden bg-black"
 //     />
 //   );
 // };
 
+//new
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-import earthTexture from "../../assets/earth-texture.jpg";
+import earthTexture from "../../assets/earth-texture2.jpg";
 
 export const Earth3D = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -329,15 +330,15 @@ export const Earth3D = () => {
 
     const scene = new THREE.Scene();
 
-    // Add animated gradient background with orange theme
-    const gradientGeometry = new THREE.PlaneGeometry(20, 20);
+    const gradientGeometry = new THREE.PlaneGeometry(50, 50);
     const gradientMaterial = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
-        color1: { value: new THREE.Color(0x0a0a0a) }, // Deep black
-        color2: { value: new THREE.Color(0x2d1810) }, // Dark orange-brown
-        color3: { value: new THREE.Color(0x4a2c17) }, // Medium orange-brown
-        color4: { value: new THREE.Color(0x1a0f0a) }, // Very dark orange
+        color1: { value: new THREE.Color(0x000011) },
+        color2: { value: new THREE.Color(0x001122) },
+        color3: { value: new THREE.Color(0x000033) },
+        color4: { value: new THREE.Color(0x000000) },
+        color5: { value: new THREE.Color(0x220044) },
       },
       vertexShader: `
         varying vec2 vUv;
@@ -352,35 +353,52 @@ export const Earth3D = () => {
         uniform vec3 color2;
         uniform vec3 color3;
         uniform vec3 color4;
+        uniform vec3 color5;
         varying vec2 vUv;
-        
+
+        float noise(vec2 p) {
+          return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+        }
+
         void main() {
           vec2 uv = vUv;
-          float wave1 = sin(uv.x * 3.0 + time * 0.3) * 0.5 + 0.5;
-          float wave2 = sin(uv.y * 2.0 + time * 0.2) * 0.5 + 0.5;
-          float wave3 = sin((uv.x + uv.y) * 2.5 + time * 0.25) * 0.5 + 0.5;
-          float wave4 = sin(length(uv - 0.5) * 4.0 + time * 0.4) * 0.5 + 0.5;
+          vec2 center = vec2(0.5, 0.5);
+          float dist = length(uv - center);
           
-          vec3 color = mix(color1, color2, wave1);
-          color = mix(color, color3, wave2 * wave3);
-          color = mix(color, color4, wave4 * 0.3);
+          float angle = atan(uv.y - 0.5, uv.x - 0.5);
+          float spiral = sin(angle * 3.0 + dist * 8.0 + time * 0.1) * 0.5 + 0.5;
           
+          float cloud1 = sin(uv.x * 4.0 + time * 0.05) * sin(uv.y * 3.0 + time * 0.03);
+          float cloud2 = sin((uv.x + uv.y) * 2.0 + time * 0.02) * 0.3;
+          
+          float layer1 = noise(uv * 8.0 + time * 0.01);
+          float layer2 = noise(uv * 16.0 + time * 0.005);
+          
+          float galaxyMask = smoothstep(0.8, 0.2, dist) * spiral;
+          float nebula = (cloud1 + cloud2) * 0.3;
+          
+          vec3 color = mix(color4, color1, layer1 * 0.5);
+          color = mix(color, color2, galaxyMask * 0.7);
+          color = mix(color, color3, nebula);
+          color = mix(color, color5, layer2 * galaxyMask * 0.4);
+
           gl_FragColor = vec4(color, 1.0);
         }
       `,
     });
 
     const gradientMesh = new THREE.Mesh(gradientGeometry, gradientMaterial);
-    gradientMesh.position.z = -10;
+    gradientMesh.position.z = -25;
     scene.add(gradientMesh);
 
+    // Fixed camera setup for proper aspect ratio
     const camera = new THREE.PerspectiveCamera(
-      75,
+      65,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       100
     );
-    camera.position.z = 8;
+    camera.position.set(0, 0, 0.4);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -391,64 +409,200 @@ export const Earth3D = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Create circular/oval particle system with orange theme
-    const createCircularParticles = () => {
+    const createGalaxyStars = () => {
       const group = new THREE.Group();
-      const particleCount = 80;
+      const starCount = 4000;
 
-      // Create different sized circular particles
-      const sizes = [0.08, 0.12, 0.16, 0.06];
-      const colors = [0xff6600, 0xff8833, 0xffaa55, 0xcc4400]; // Orange gradient
+      const starTypes = [
+        { size: 0.03, color: 0xffffff, opacity: 0.9, brightness: 1.2 },
+        { size: 0.05, color: 0xaaccff, opacity: 0.8, brightness: 1.0 },
+        { size: 0.04, color: 0xffffaa, opacity: 0.85, brightness: 1.1 },
+        { size: 0.035, color: 0xffaacc, opacity: 0.7, brightness: 0.9 },
+        { size: 0.08, color: 0xccccff, opacity: 0.6, brightness: 0.8 },
+        { size: 0.025, color: 0xffffff, opacity: 1.0, brightness: 1.3 },
+        { size: 0.045, color: 0xccffcc, opacity: 0.75, brightness: 1.0 },
+        { size: 0.07, color: 0xffccaa, opacity: 0.65, brightness: 0.85 },
+      ];
 
-      for (let i = 0; i < particleCount; i++) {
-        const sizeIndex = Math.floor(Math.random() * sizes.length);
-        const size = sizes[sizeIndex];
-        const color = colors[sizeIndex];
+      // Create realistic star shapes using points or small spheres
+      for (let i = 0; i < starCount; i++) {
+        const starType =
+          starTypes[Math.floor(Math.random() * starTypes.length)];
 
-        // Create circular geometry
-        const particleGeometry = new THREE.CircleGeometry(size, 8);
-        const particleMaterial = new THREE.MeshBasicMaterial({
-          color: color,
+        // Create star using SphereGeometry for 3D effect
+        const starGeometry = new THREE.SphereGeometry(starType.size, 8, 6);
+        const starMaterial = new THREE.MeshBasicMaterial({
+          color: starType.color,
           transparent: true,
-          opacity: Math.random() * 0.3 + 0.3,
+          opacity: starType.opacity,
+          emissive: starType.color,
+          emissiveIntensity: starType.brightness * 0.3,
+        });
+
+        const star = new THREE.Mesh(starGeometry, starMaterial);
+
+        // Position stars in a sphere around the scene
+        const phi = Math.random() * Math.PI * 2;
+        const theta = Math.random() * Math.PI;
+        const radius = Math.random() * 25 + 15; // Increased distance range
+
+        star.position.set(
+          radius * Math.sin(theta) * Math.cos(phi),
+          radius * Math.sin(theta) * Math.sin(phi),
+          radius * Math.cos(theta)
+        );
+
+        star.userData.velocity = new THREE.Vector3(
+          (Math.random() - 0.5) * 0.002,
+          (Math.random() - 0.5) * 0.002,
+          (Math.random() - 0.5) * 0.002
+        );
+
+        star.userData.twinkleSpeed = Math.random() * 0.02 + 0.01;
+        star.userData.baseOpacity = star.material.opacity;
+        star.userData.maxOpacity = star.material.opacity;
+        star.userData.minOpacity = star.material.opacity * 0.3;
+
+        group.add(star);
+      }
+
+      // Add some brighter "star clusters" with cross-shaped glow
+      for (let i = 0; i < 50; i++) {
+        const brightStarGroup = new THREE.Group();
+
+        // Main bright star
+        const mainStar = new THREE.Mesh(
+          new THREE.SphereGeometry(0.1, 8, 6),
+          new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.9,
+            emissive: 0xffffff,
+            emissiveIntensity: 0.5,
+          })
+        );
+
+        // Add cross-shaped glow effect
+        const glowGeometry = new THREE.PlaneGeometry(0.8, 0.05);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.3,
+          blending: THREE.AdditiveBlending,
+        });
+
+        const horizontalGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+        const verticalGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+        verticalGlow.rotation.z = Math.PI / 2;
+
+        brightStarGroup.add(mainStar);
+        brightStarGroup.add(horizontalGlow);
+        brightStarGroup.add(verticalGlow);
+
+        // Position bright stars
+        const phi = Math.random() * Math.PI * 2;
+        const theta = Math.random() * Math.PI;
+        const radius = Math.random() * 30 + 20;
+
+        brightStarGroup.position.set(
+          radius * Math.sin(theta) * Math.cos(phi),
+          radius * Math.sin(theta) * Math.sin(phi),
+          radius * Math.cos(theta)
+        );
+
+        brightStarGroup.userData.velocity = new THREE.Vector3(
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001
+        );
+
+        brightStarGroup.userData.twinkleSpeed = Math.random() * 0.015 + 0.005;
+
+        group.add(brightStarGroup);
+      }
+
+      // Keep nebulae and dust as they were
+      for (let i = 0; i < 30; i++) {
+        const nebulaGeometry = new THREE.CircleGeometry(
+          Math.random() * 0.4 + 0.15,
+          8
+        );
+        const nebulaColors = [0x4444ff, 0xff44aa, 0x44ff44, 0xff6644, 0xaa44ff];
+        const nebulaColor =
+          nebulaColors[Math.floor(Math.random() * nebulaColors.length)];
+
+        const nebulaMaterial = new THREE.MeshBasicMaterial({
+          color: nebulaColor,
+          transparent: true,
+          opacity: Math.random() * 0.08 + 0.03,
           blending: THREE.AdditiveBlending,
           side: THREE.DoubleSide,
         });
 
-        const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+        const nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
 
-        // Random position
-        particle.position.set(
-          (Math.random() - 0.5) * 20,
-          (Math.random() - 0.5) * 20,
-          (Math.random() - 0.5) * 20
+        nebula.position.set(
+          (Math.random() - 0.5) * 35,
+          (Math.random() - 0.5) * 35,
+          (Math.random() - 0.5) * 35
         );
 
-        // Random velocity
-        particle.userData.velocity = new THREE.Vector3(
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.02
+        nebula.userData.velocity = new THREE.Vector3(
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001
         );
 
-        // Random rotation speed
-        particle.userData.rotationSpeed = (Math.random() - 0.5) * 0.02;
+        nebula.userData.rotationSpeed = (Math.random() - 0.5) * 0.003;
+        nebula.userData.twinkleSpeed = Math.random() * 0.008 + 0.002;
+        nebula.userData.baseOpacity = nebula.material.opacity;
 
-        // Twinkling effect
-        particle.userData.twinkleSpeed = Math.random() * 0.02 + 0.01;
-        particle.userData.baseOpacity = particle.material.opacity;
+        group.add(nebula);
+      }
 
-        group.add(particle);
+      for (let i = 0; i < 100; i++) {
+        const dustGeometry = new THREE.CircleGeometry(
+          Math.random() * 0.08 + 0.02,
+          4
+        );
+        const dustMaterial = new THREE.MeshBasicMaterial({
+          color: 0x666699,
+          transparent: true,
+          opacity: Math.random() * 0.15 + 0.05,
+          blending: THREE.AdditiveBlending,
+          side: THREE.DoubleSide,
+        });
+
+        const dust = new THREE.Mesh(dustGeometry, dustMaterial);
+
+        dust.position.set(
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 40
+        );
+
+        dust.userData.velocity = new THREE.Vector3(
+          (Math.random() - 0.5) * 0.0005,
+          (Math.random() - 0.5) * 0.0005,
+          (Math.random() - 0.5) * 0.0005
+        );
+
+        dust.userData.rotationSpeed = (Math.random() - 0.5) * 0.001;
+
+        group.add(dust);
       }
 
       return group;
     };
 
-    const particles = createCircularParticles();
-    scene.add(particles);
+    const stars = createGalaxyStars();
+    scene.add(stars);
 
-    // Create Earth
-    const earthGeometry = new THREE.SphereGeometry(2.5, 64, 64);
+    // FIXED: Perfect circle Earth with proper proportions
+    const earthRadius = 2.4;
+    const atmosphereRadius = earthRadius * 1.15; // Only 15% larger for realistic atmosphere
+
+    const earthGeometry = new THREE.SphereGeometry(earthRadius, 64, 64); // Increased segments for smoother sphere
     const textureLoader = new THREE.TextureLoader();
 
     textureLoader.load(earthTexture, (texture) => {
@@ -458,27 +612,116 @@ export const Earth3D = () => {
       });
       const earth = new THREE.Mesh(earthGeometry, earthMaterial);
       earth.userData.isEarth = true;
-      earth.position.set(0, 0, 0);
+      earth.position.set(-5, 0, 2);
       earthRef.current = earth;
       scene.add(earth);
 
-      // Add subtle floating animation
+      // FIXED: Atmosphere with correct proportional radius
+      const atmosphereGeometry = new THREE.SphereGeometry(
+        atmosphereRadius,
+        64,
+        64
+      );
+      const atmosphereMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          time: { value: 0 },
+          sunPosition: { value: new THREE.Vector3(5, 3, 5) },
+          cameraPosition: { value: camera.position },
+          planetRadius: { value: earthRadius }, // Updated to match actual earth radius
+          atmosphereRadius: { value: atmosphereRadius }, // Updated to match actual atmosphere radius
+        },
+        vertexShader: `
+          uniform vec3 sunPosition;
+          uniform vec3 cameraPosition;
+          uniform float planetRadius;
+          uniform float atmosphereRadius;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          varying vec3 vWorldPosition;
+          varying float vRimIntensity;
+          varying float vSunAngle;
+          
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+            vWorldPosition = worldPosition.xyz;
+            vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+            
+            vec3 viewDirection = normalize(cameraPosition - worldPosition.xyz);
+            float rimFactor = 1.0 - max(0.0, dot(vNormal, viewDirection));
+            vRimIntensity = pow(rimFactor, 2.5);
+            
+            vec3 toSun = normalize(sunPosition - worldPosition.xyz);
+            vSunAngle = dot(vNormal, toSun);
+            
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float time;
+          uniform vec3 sunPosition;
+          uniform vec3 cameraPosition;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          varying vec3 vWorldPosition;
+          varying float vRimIntensity;
+          varying float vSunAngle;
+          
+          void main() {
+            vec3 toSun = normalize(sunPosition - vWorldPosition);
+            vec3 toCamera = normalize(cameraPosition - vWorldPosition);
+            
+            float sunDot = max(0.0, vSunAngle);
+            float cameraDot = max(0.0, dot(vNormal, toCamera));
+            
+            float scattering = pow(1.0 - cameraDot, 3.0);
+            float sunGlow = pow(sunDot, 0.8) * scattering;
+            
+            vec3 baseAtmosphere = vec3(0.4, 0.7, 1.0);
+            vec3 sunsetColor = vec3(1.0, 0.6, 0.3);
+            vec3 nightGlow = vec3(0.2, 0.4, 0.8);
+            
+            float dayNightMix = smoothstep(-0.2, 0.3, sunDot);
+            vec3 atmosphereColor = mix(nightGlow, baseAtmosphere, dayNightMix);
+            
+            float sunsetFactor = smoothstep(0.0, 0.4, sunDot) * (1.0 - smoothstep(0.4, 0.8, sunDot));
+            atmosphereColor = mix(atmosphereColor, sunsetColor, sunsetFactor * 0.6);
+            
+            float oxygenGlow = pow(scattering, 1.5) * (0.8 + 0.2 * sin(time * 2.0));
+            float nitrogenScatter = pow(scattering, 2.2) * 0.6;
+            
+            vec3 finalColor = atmosphereColor * (oxygenGlow + nitrogenScatter);
+            finalColor += sunsetColor * sunGlow * 0.8;
+            
+            float alpha = (scattering * 0.7 + sunGlow * 0.4) * (0.9 + 0.1 * sin(time * 1.5));
+            alpha = clamp(alpha, 0.0, 0.8);
+            
+            gl_FragColor = vec4(finalColor, alpha);
+          }
+        `,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthWrite: false,
+      });
+
+      const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+      atmosphere.userData.isAtmosphere = true;
+      earth.add(atmosphere);
+
       const originalY = earth.position.y;
       earth.userData.originalY = originalY;
     });
 
-    // Enhanced lighting with orange theme
-    scene.add(new THREE.AmbientLight(0x402010, 0.4)); // Warm amber ambient
-    const directionalLight = new THREE.DirectionalLight(0xffaa66, 1); // Warm orange light
+    scene.add(new THREE.AmbientLight(0x112244, 0.3));
+    const directionalLight = new THREE.DirectionalLight(0xffffee, 1.2);
     directionalLight.position.set(5, 3, 5);
     scene.add(directionalLight);
 
-    // Add subtle rim lighting with orange tint
-    const rimLight = new THREE.DirectionalLight(0xcc6600, 0.3); // Deep orange rim light
+    const rimLight = new THREE.DirectionalLight(0x4488ff, 0.4);
     rimLight.position.set(-5, -3, -5);
     scene.add(rimLight);
 
-    // Mouse interaction
     const handleMouseDown = (event: MouseEvent) => {
       isMouseDown.current = true;
       mousePos.current = { x: event.clientX, y: event.clientY };
@@ -491,7 +734,6 @@ export const Earth3D = () => {
     };
 
     const handleMouseMove = (event: MouseEvent) => {
-      // Update mouse position for camera and Earth tilt effects
       mouseRef.current = {
         x: (event.clientX / window.innerWidth) * 2 - 1,
         y: -(event.clientY / window.innerHeight) * 2 + 1,
@@ -521,7 +763,6 @@ export const Earth3D = () => {
       renderer.domElement.style.cursor = "default";
     };
 
-    // Touch support
     const handleTouchStart = (event: TouchEvent) => {
       if (event.touches.length === 1) {
         isMouseDown.current = true;
@@ -560,7 +801,6 @@ export const Earth3D = () => {
       };
     };
 
-    // Event listeners
     const canvas = renderer.domElement;
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mousemove", handleMouseMove);
@@ -571,67 +811,81 @@ export const Earth3D = () => {
     canvas.addEventListener("touchend", handleTouchEnd);
     canvas.addEventListener("touchmove", handleTouchMove);
 
-    // Animation loop
     const animate = () => {
       frameRef.current = requestAnimationFrame(animate);
       const time = Date.now() * 0.001;
 
-      // Update gradient background
       if (gradientMaterial.uniforms.time) {
         gradientMaterial.uniforms.time.value = time;
       }
 
-      // Animate circular particles
-      particles.children.forEach((particle) => {
-        // Move particles
-        particle.position.add(particle.userData.velocity);
+      // Enhanced star animation with proper twinkling
+      stars.children.forEach((star) => {
+        if (star.userData.velocity) {
+          star.position.add(star.userData.velocity);
+        }
 
-        // Rotate particles
-        particle.rotation.z += particle.userData.rotationSpeed;
+        if (star.userData.rotationSpeed) {
+          star.rotation.z += star.userData.rotationSpeed;
+        }
 
-        // Twinkling effect
-        const twinkle =
-          Math.sin(time * particle.userData.twinkleSpeed) * 0.3 + 0.7;
-        particle.material.opacity = particle.userData.baseOpacity * twinkle;
+        // Enhanced twinkling for different star types
+        if (star.userData.twinkleSpeed) {
+          const twinkle =
+            Math.sin(time * star.userData.twinkleSpeed) * 0.5 + 0.5;
 
-        // Wrap particles around
-        if (Math.abs(particle.position.x) > 10)
-          particle.userData.velocity.x *= -1;
-        if (Math.abs(particle.position.y) > 10)
-          particle.userData.velocity.y *= -1;
-        if (Math.abs(particle.position.z) > 10)
-          particle.userData.velocity.z *= -1;
+          if (star.material) {
+            // Single star
+            const opacity =
+              star.userData.minOpacity +
+              (star.userData.maxOpacity - star.userData.minOpacity) * twinkle;
+            star.material.opacity = opacity;
+          } else {
+            // Bright star group with cross glow
+            star.children.forEach((child) => {
+              if (child.material) {
+                const baseOpacity = child.material.opacity;
+                child.material.opacity = baseOpacity * (0.7 + 0.3 * twinkle);
+              }
+            });
+          }
+        }
+
+        // Boundary check
+        if (Math.abs(star.position.x) > 30) star.userData.velocity.x *= -1;
+        if (Math.abs(star.position.y) > 30) star.userData.velocity.y *= -1;
+        if (Math.abs(star.position.z) > 30) star.userData.velocity.z *= -1;
       });
 
-      // Always auto-rotate Earth
       autoRotationY.current += 0.005;
 
-      // Update Earth rotation and effects
       if (earthRef.current) {
-        // Combined auto + mouse rotation
         earthRef.current.rotation.x = mouseRotation.current.x;
         earthRef.current.rotation.y =
           autoRotationY.current + mouseRotation.current.y;
 
-        // Subtle floating animation
-        earthRef.current.position.y = Math.sin(time * 0.5) * 0.1;
+        earthRef.current.position.y = Math.sin(time * 0.5) * 0.05;
 
-        // Subtle mouse-following tilt
-        const targetRotationZ = mouseRef.current.x * 0.1;
+        const targetRotationZ = mouseRef.current.x * 0.05;
         earthRef.current.rotation.z +=
           (targetRotationZ - earthRef.current.rotation.z) * 0.02;
 
-        // Subtle scale pulse
-        const scale = 1 + Math.sin(time * 0.3) * 0.02;
-        earthRef.current.scale.setScalar(scale);
+        const atmosphere = earthRef.current.children.find(
+          (child) => child.userData.isAtmosphere
+        );
+        if (atmosphere && atmosphere.material.uniforms) {
+          atmosphere.material.uniforms.time.value = time;
+          atmosphere.material.uniforms.cameraPosition.value.copy(
+            camera.position
+          );
+        }
       }
 
-      // Camera gentle movement based on mouse position
       if (cameraRef.current && !isMouseDown.current) {
         cameraRef.current.position.x +=
-          (mouseRef.current.x * 0.5 - cameraRef.current.position.x) * 0.02;
+          (mouseRef.current.x * 0.3 + 3 - cameraRef.current.position.x) * 0.02;
         cameraRef.current.position.y +=
-          (mouseRef.current.y * 0.5 - cameraRef.current.position.y) * 0.02;
+          (mouseRef.current.y * 0.3 - cameraRef.current.position.y) * 0.02;
         cameraRef.current.lookAt(0, 0, 0);
       }
 
@@ -644,6 +898,7 @@ export const Earth3D = () => {
       if (mountRef.current && renderer && camera) {
         const width = mountRef.current.clientWidth;
         const height = mountRef.current.clientHeight;
+
         renderer.setSize(width, height);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
@@ -679,7 +934,7 @@ export const Earth3D = () => {
   return (
     <div
       ref={mountRef}
-      className="w-full h-full flex justify-end items-end rounded-[12px] cursor-grab active:cursor-grabbing bg-black"
+      className="w-full flex justify-end items-end h-full rounded-[12px] cursor-grab active:cursor-grabbing"
     />
   );
 };

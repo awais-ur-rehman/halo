@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button } from "../../../../components/common/Button";
 import { Input } from "../../../../components/common/Input";
 import { useAuth } from "../../../../hook/useAuth";
 import type { LoginFormData } from "../../../../types/auth";
-import { ROUTES } from "../../../../routes";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,11 +21,11 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-lg mx-auto rounded-[20px] bg-white/10 border border-white/10 p-2">
       <div className="rounded-2xl p-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-black  mb-2">Sign In</h2>
-          <p className="text-gray-600 ">Access your Halo dashboard</p>
+          <h2 className="text-4xl font-bold text-white  mb-2">Sign In</h2>
+          <p className="text-white/60 ">Access your Halo dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -78,15 +76,6 @@ export const LoginForm = () => {
               </p>
             </div>
           )}
-
-          <div className="flex items-center justify-between">
-            <Link
-              to={ROUTES.FORGOT_PASSWORD}
-              className="text-sm text-orange-600 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300 transition-colors"
-            >
-              Forgot Password?
-            </Link>
-          </div>
 
           <Button
             type="submit"
