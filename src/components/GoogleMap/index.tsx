@@ -324,28 +324,6 @@ export const GoogleMap = ({
         </div>
       )}
 
-      <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-xs border border-gray-200 z-[1000]">
-        <h4 className="font-semibold text-gray-900 mb-3 text-sm">Legend</h4>
-        <div className="space-y-2 text-xs">
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-            <span className="text-gray-600">Your Location</span>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-            <span className="text-gray-600">Active Branch/ATM</span>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <span className="text-gray-600">Under Maintenance</span>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 rounded-full bg-gray-500"></div>
-            <span className="text-gray-600">Closed</span>
-          </div>
-        </div>
-      </div>
-
       {mapLoaded && (
         <div className="absolute bottom-4 left-4 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm z-[1000]">
           <div className="flex items-center space-x-2">
@@ -356,18 +334,6 @@ export const GoogleMap = ({
           </div>
         </div>
       )}
-
-      <div className="absolute bottom-4 right-4 bg-white bg-opacity-90 rounded px-2 py-1 text-xs text-gray-600 z-[1000]">
-        Powered by{" "}
-        <a
-          href="https://www.openstreetmap.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline"
-        >
-          OpenStreetMap
-        </a>
-      </div>
     </div>
   );
 };

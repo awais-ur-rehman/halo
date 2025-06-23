@@ -2,14 +2,11 @@ import { useState } from "react";
 import {
   MapPin,
   Building2,
-  Navigation,
   RefreshCw,
   Phone,
   Clock,
-  Filter,
-  Search,
+  X,
   List,
-  Map as MapIcon,
 } from "lucide-react";
 import { GoogleMap } from "../../../components/GoogleMap";
 import { useBranches, type Branch } from "../../../hook/useControlCenter";
@@ -34,7 +31,7 @@ export const ControlCenterPage = () => {
   const [typeFilter, setTypeFilter] = useState<
     "all" | "main" | "branch" | "atm"
   >("all");
-  const [viewMode, setViewMode] = useState<"map" | "list">("map");
+  const [showBranchPanel, setShowBranchPanel] = useState(false);
 
   const filteredBranches = getBranchesByDistance().filter((branch) => {
     const matchesSearch =
@@ -101,121 +98,254 @@ export const ControlCenterPage = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
-      <div className="h-40 bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
-        <div className="flex items-center justify-between h-16">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Control Center</h1>
-            <p className="text-gray-600 mt-1">
-              {locationPermissionDenied
-                ? "Showing branches around Karachi (location access denied)"
-                : "Showing branches near your location"}
-            </p>
-          </div>
+    <div className="h-full relative overflow-hidden p-6">
+      <style>{`
+        .leaflet-container {
+          background: linear-gradient(
+            135deg,
+            #667eea 0%,
+            #764ba2 100%
+          ) !important;
+          font-family: system-ui, -apple-system, sans-serif !important;
+        }
 
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode("map")}
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === "map"
-                    ? "bg-white text-orange-600 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                <MapIcon className="w-4 h-4 mr-2" />
-                Map
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === "list"
-                    ? "bg-white text-orange-600 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                <List className="w-4 h-4 mr-2" />
-                List
-              </button>
-            </div>
+        .leaflet-tile-pane {
+          filter: grayscale(20%) contrast(1.1) brightness(0.95)
+            hue-rotate(15deg);
+        }
 
-            <button
-              onClick={refreshBranches}
-              disabled={loading}
-              className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <RefreshCw
-                className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-              />
-              Refresh
-            </button>
-          </div>
-        </div>
+        .leaflet-control-zoom {
+          border: none !important;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+          border-radius: 12px !important;
+          overflow: hidden !important;
+          backdrop-filter: blur(20px) !important;
+          background: rgba(255, 255, 255, 0.15) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
 
-        <div className="mt-4 flex flex-wrap items-center gap-4">
-          <div className="relative flex-1 min-w-64">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search branches by name or address..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-          </div>
+        .leaflet-control-zoom a {
+          background: rgba(255, 255, 255, 0.1) !important;
+          color: #1f2937 !important;
+          border: none !important;
+          backdrop-filter: blur(10px) !important;
+          font-weight: 600 !important;
+          font-size: 18px !important;
+          transition: all 0.3s ease !important;
+          width: 40px !important;
+          height: 40px !important;
+          line-height: 40px !important;
+        }
 
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="maintenance">Maintenance</option>
-            <option value="closed">Closed</option>
-          </select>
+        .leaflet-control-zoom a:hover {
+          background: rgba(255, 255, 255, 0.25) !important;
+          transform: scale(1.05) !important;
+          color: #111827 !important;
+        }
 
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as any)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          >
-            <option value="all">All Types</option>
-            <option value="main">Main Branch</option>
-            <option value="branch">Branch</option>
-            <option value="atm">ATM</option>
-          </select>
-        </div>
+        .leaflet-control-zoom a:first-child {
+          border-top-left-radius: 12px !important;
+          border-top-right-radius: 12px !important;
+        }
+
+        .leaflet-control-zoom a:last-child {
+          border-bottom-left-radius: 12px !important;
+          border-bottom-right-radius: 12px !important;
+        }
+
+        .leaflet-popup-content-wrapper {
+          background: rgba(255, 255, 255, 0.95) !important;
+          backdrop-filter: blur(20px) !important;
+          border-radius: 16px !important;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          padding: 0 !important;
+        }
+
+        .leaflet-popup-content {
+          margin: 16px !important;
+        }
+
+        .leaflet-popup-tip {
+          background: rgba(255, 255, 255, 0.95) !important;
+          backdrop-filter: blur(20px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .leaflet-popup-close-button {
+          background: rgba(239, 68, 68, 0.1) !important;
+          color: #dc2626 !important;
+          border-radius: 50% !important;
+          width: 24px !important;
+          height: 24px !important;
+          font-size: 14px !important;
+          font-weight: bold !important;
+          right: 8px !important;
+          top: 8px !important;
+          transition: all 0.2s ease !important;
+        }
+
+        .leaflet-popup-close-button:hover {
+          background: rgba(239, 68, 68, 0.2) !important;
+          transform: scale(1.1) !important;
+        }
+
+        .custom-marker {
+          filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+          transition: all 0.3s ease;
+        }
+
+        .custom-marker:hover {
+          transform: scale(1.1);
+          filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+        }
+
+        .user-location-marker {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+
+        .leaflet-control-attribution {
+          background: rgba(255, 255, 255, 0.8) !important;
+          backdrop-filter: blur(10px) !important;
+          border-radius: 8px !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          font-size: 11px !important;
+          padding: 4px 8px !important;
+        }
+
+        .legend-card {
+          background: rgba(255, 255, 255, 0.1) !important;
+          backdrop-filter: blur(25px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .status-indicator {
+          background: rgba(255, 255, 255, 0.1) !important;
+          backdrop-filter: blur(15px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        }
+      `}</style>
+
+      <div className="absolute inset-0 p-6">
+        <GoogleMap
+          userLocation={userLocation}
+          branches={filteredBranches}
+          onBranchSelect={handleBranchSelect}
+          loading={loading}
+        />
       </div>
 
-      <div className="flex-1 flex min-h-0">
-        {viewMode === "map" ? (
-          <>
-            <div className="flex-1 p-6 min-w-0 h-[90%]">
-              <div className="h-full bg-white rounded-lg shadow-sm overflow-hidden">
-                <GoogleMap
-                  userLocation={userLocation}
-                  branches={filteredBranches}
-                  onBranchSelect={handleBranchSelect}
-                  loading={loading}
-                />
-              </div>
+      <div className="absolute top-8 left-25 z-[999]">
+        <button
+          onClick={() => setShowBranchPanel(true)}
+          className="group relative px-4 py-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl shadow-xl hover:bg-white/30 transition-all duration-300 hover:scale-105"
+          style={{
+            background: "rgba(255, 255, 255, 0.15)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <div className="flex items-center space-x-3">
+            <List className="w-6 h-6 text-gray-900" />
+            <span className="font-semibold text-gray-900 text-base">
+              View Branches
+            </span>
+            <div className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+              {filteredBranches.length}
             </div>
+          </div>
 
-            <div className="w-96 bg-white border-l border-gray-200 flex flex-col h-[90%]">
-              <div className="p-6 border-b border-gray-200 flex-shrink-0">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Nearby Branches ({filteredBranches.length})
-                </h3>
-                {selectedBranch && (
-                  <p className="text-sm text-orange-600">
-                    {selectedBranch.name} selected
-                  </p>
-                )}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400/10 to-purple-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </button>
+      </div>
+
+      {showBranchPanel && (
+        <>
+          <div
+            className="absolute inset-0 pt-10  z-[998] transition-all duration-300"
+            onClick={() => setShowBranchPanel(false)}
+          />
+
+          <div className="absolute top-10 right-10 h-[90%] w-96 z-[1000] transform transition-transform duration-500 ease-out">
+            <div
+              className="h-full relative overflow-hidden"
+              style={{
+                background: "rgba(255, 255, 255, 0.5)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              }}
+            >
+              <div className="relative p-6 border-b border-white/20">
+                <div className="flex items-center justify-between p-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      Nearby Branches
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {filteredBranches.length} locations found
+                    </p>
+                    {selectedBranch && (
+                      <p className="text-sm text-orange-600 mt-1">
+                        {selectedBranch.name} selected
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setShowBranchPanel(false)}
+                    className="p-2 hover:bg-white/20 rounded-full transition-colors duration-200"
+                  >
+                    <X className="w-5 h-5 text-gray-700" />
+                  </button>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Search branches..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-xl placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-transparent backdrop-blur-sm"
+                  />
+
+                  <div className="flex space-x-2">
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value as any)}
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/30 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400/50 backdrop-blur-sm text-sm"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="active">Active</option>
+                      <option value="maintenance">Maintenance</option>
+                      <option value="closed">Closed</option>
+                    </select>
+
+                    <select
+                      value={typeFilter}
+                      onChange={(e) => setTypeFilter(e.target.value as any)}
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/30 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400/50 backdrop-blur-sm text-sm"
+                    >
+                      <option value="all">All Types</option>
+                      <option value="main">Main</option>
+                      <option value="branch">Branch</option>
+                      <option value="atm">ATM</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto">
-                {filteredBranches.map((branch) => {
+              <div className="relative flex-1 overflow-y-auto max-h-[calc(94vh-280px)] min-h-0">
+                {filteredBranches.map((branch, index) => {
                   const distance = userLocation
                     ? calculateDistance(
                         userLocation.lat,
@@ -229,15 +359,18 @@ export const ControlCenterPage = () => {
                     <div
                       key={branch.id}
                       onClick={() => handleBranchSelect(branch)}
-                      className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+                      className={`p-4 border-b border-white/10 cursor-pointer hover:bg-white/20 transition-all duration-300 ${
                         selectedBranch?.id === branch.id
-                          ? "bg-orange-50 border-orange-200"
+                          ? "bg-orange-400/20 border-orange-400/30"
                           : ""
                       }`}
+                      style={{
+                        animationDelay: `${index * 0.05}s`,
+                      }}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center space-x-2">
-                          <span className="text-lg">
+                          <span className="text-lg filter drop-shadow-sm">
                             {getTypeIcon(branch.type)}
                           </span>
                           <h4 className="font-medium text-gray-900 text-sm">
@@ -245,42 +378,42 @@ export const ControlCenterPage = () => {
                           </h4>
                         </div>
                         {distance && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-gray-600 bg-white/30 px-2 py-1 rounded-full">
                             {distance} km
                           </span>
                         )}
                       </div>
 
                       <div className="flex items-start space-x-2 mb-2">
-                        <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-600 line-clamp-2">
+                        <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-gray-700 line-clamp-2">
                           {branch.address}
                         </p>
                       </div>
 
                       {branch.phone && (
                         <div className="flex items-center space-x-2 mb-2">
-                          <Phone className="w-4 h-4 text-gray-400" />
-                          <p className="text-sm text-gray-600">
+                          <Phone className="w-4 h-4 text-gray-500" />
+                          <p className="text-sm text-gray-700">
                             {branch.phone}
                           </p>
                         </div>
                       )}
 
                       <div className="flex items-center space-x-2 mb-3">
-                        <Clock className="w-4 h-4 text-gray-400" />
-                        <p className="text-sm text-gray-600">
+                        <Clock className="w-4 h-4 text-gray-500" />
+                        <p className="text-sm text-gray-700">
                           {branch.workingHours}
                         </p>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-400/30 text-blue-900 backdrop-blur-sm">
                             {branch.type.toUpperCase()}
                           </span>
                           <span
-                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${getStatusColor(
                               branch.status
                             )}`}
                           >
@@ -294,115 +427,8 @@ export const ControlCenterPage = () => {
 
                 {filteredBranches.length === 0 && !loading && (
                   <div className="p-8 text-center">
-                    <Building2 className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">
-                      No branches found matching your criteria
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 p-6 min-w-0">
-            <div className="h-full bg-white rounded-lg shadow-sm overflow-hidden flex flex-col">
-              <div className="flex-1 overflow-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50 sticky top-0">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Branch
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Address
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Contact
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Hours
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      {userLocation && (
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Distance
-                        </th>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredBranches.map((branch) => {
-                      const distance = userLocation
-                        ? calculateDistance(
-                            userLocation.lat,
-                            userLocation.lng,
-                            branch.coordinates.lat,
-                            branch.coordinates.lng
-                          )
-                        : null;
-
-                      return (
-                        <tr
-                          key={branch.id}
-                          className="hover:bg-gray-50 cursor-pointer"
-                          onClick={() => handleBranchSelect(branch)}
-                        >
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <span className="text-lg mr-3">
-                                {getTypeIcon(branch.type)}
-                              </span>
-                              <div>
-                                <div className="text-sm font-medium text-gray-900">
-                                  {branch.name}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {branch.type.toUpperCase()}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 max-w-xs truncate">
-                              {branch.address}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
-                              {branch.phone || "N/A"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 max-w-xs">
-                              {branch.workingHours}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                                branch.status
-                              )}`}
-                            >
-                              {branch.status.toUpperCase()}
-                            </span>
-                          </td>
-                          {userLocation && (
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {distance ? `${distance} km` : "N/A"}
-                            </td>
-                          )}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-
-                {filteredBranches.length === 0 && !loading && (
-                  <div className="p-8 text-center">
-                    <Building2 className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">
+                    <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4 filter drop-shadow-sm" />
+                    <p className="text-gray-600">
                       No branches found matching your criteria
                     </p>
                   </div>
@@ -410,15 +436,15 @@ export const ControlCenterPage = () => {
 
                 {loading && (
                   <div className="p-8 text-center">
-                    <RefreshCw className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading branches...</p>
+                    <RefreshCw className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-4 filter drop-shadow-sm" />
+                    <p className="text-gray-600">Loading branches...</p>
                   </div>
                 )}
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };

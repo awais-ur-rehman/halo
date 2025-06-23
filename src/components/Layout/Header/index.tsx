@@ -287,7 +287,7 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
               </button>
 
               {showProfileMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-[1000]">
                   <div className="p-4 border-b border-gray-200">
                     <p className="text-sm font-medium text-gray-900">
                       {user?.name}

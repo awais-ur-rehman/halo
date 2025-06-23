@@ -16,13 +16,12 @@ export const LoginPage = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="h-screen w-screen bg-white  flex p-4">
-      <div className="h-full w-1/2 flex justify-center items-center rounded-[12px]">
+    <div className="h-screen w-screen">
+      <div className="bg-black h-full w-full flex justify-center items-center">
         <Earth3D />
-      </div>
-
-      <div className="h-full w-1/2 flex items-center justify-center p-8">
-        <LoginForm />
+        <div className="absolute w-[40%] right-20 flex items-center justify-center">
+          <LoginForm />
+        </div>
       </div>
     </div>
   );
