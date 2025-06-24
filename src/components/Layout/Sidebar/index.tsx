@@ -1,5 +1,5 @@
 // src/components/Layout/Sidebar/index.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Settings,
@@ -7,7 +7,6 @@ import {
   Users,
   TrendingUp,
   FileText,
-  ChevronDown,
   ChevronRight,
   Monitor,
   MapPin,
@@ -19,14 +18,17 @@ import {
   Briefcase,
   UserCheck,
   Clock,
+  Sun,
+  Moon,
+  ArrowLeft,
 } from "lucide-react";
 
 interface SidebarItem {
   id: string;
   label: string;
   icon: React.ReactNode;
-  path?: string;
-  children?: SidebarItem[];
+  path: string;
+  children?: never;
 }
 
 interface SidebarProps {
@@ -48,116 +50,120 @@ const mainNavigation: SidebarItem[] = [
     label: "Branches",
     icon: <Building2 className="w-5 h-5" />,
     path: "/dashboard/branches",
-    children: [
-      {
-        id: "branch-overview",
-        label: "Overview",
-        icon: <BarChart3 className="w-4 h-4" />,
-        path: "/dashboard/branches/overview",
-      },
-      {
-        id: "branch-locations",
-        label: "Locations",
-        icon: <MapPin className="w-4 h-4" />,
-        path: "/dashboard/branches/locations",
-      },
-      {
-        id: "branch-performance",
-        label: "Performance",
-        icon: <TrendingUp className="w-4 h-4" />,
-        path: "/dashboard/branches/performance",
-      },
-    ],
   },
   {
     id: "competitors",
     label: "Competitors",
     icon: <Target className="w-5 h-5" />,
     path: "/dashboard/competitors",
-    children: [
-      {
-        id: "competitor-analysis",
-        label: "Analysis",
-        icon: <BarChart3 className="w-4 h-4" />,
-        path: "/dashboard/competitors/analysis",
-      },
-      {
-        id: "competitor-tracking",
-        label: "Tracking",
-        icon: <TrendingUp className="w-4 h-4" />,
-        path: "/dashboard/competitors/tracking",
-      },
-      {
-        id: "competitor-benchmarks",
-        label: "Benchmarks",
-        icon: <Target className="w-4 h-4" />,
-        path: "/dashboard/competitors/benchmarks",
-      },
-    ],
   },
   {
     id: "departments",
     label: "Departments",
     icon: <Users className="w-5 h-5" />,
     path: "/dashboard/departments",
-    children: [
-      {
-        id: "dept-overview",
-        label: "Overview",
-        icon: <BarChart3 className="w-4 h-4" />,
-        path: "/dashboard/departments/overview",
-      },
-      {
-        id: "dept-staff",
-        label: "Staff Management",
-        icon: <UserCheck className="w-4 h-4" />,
-        path: "/dashboard/departments/staff",
-      },
-      {
-        id: "dept-projects",
-        label: "Projects",
-        icon: <Briefcase className="w-4 h-4" />,
-        path: "/dashboard/departments/projects",
-      },
-      {
-        id: "dept-schedule",
-        label: "Schedules",
-        icon: <Calendar className="w-4 h-4" />,
-        path: "/dashboard/departments/schedules",
-      },
-    ],
   },
   {
     id: "reports-alerts",
     label: "Reports & Alerts",
     icon: <FileText className="w-5 h-5" />,
     path: "/dashboard/reports",
-    children: [
-      {
-        id: "reports-dashboard",
-        label: "Dashboard",
-        icon: <BarChart3 className="w-4 h-4" />,
-        path: "/dashboard/reports/dashboard",
-      },
-      {
-        id: "reports-financial",
-        label: "Financial Reports",
-        icon: <FileBarChart className="w-4 h-4" />,
-        path: "/dashboard/reports/financial",
-      },
-      {
-        id: "reports-alerts",
-        label: "Alerts",
-        icon: <Bell className="w-4 h-4" />,
-        path: "/dashboard/reports/alerts",
-      },
-      {
-        id: "reports-scheduled",
-        label: "Scheduled Reports",
-        icon: <Clock className="w-4 h-4" />,
-        path: "/dashboard/reports/scheduled",
-      },
-    ],
+  },
+];
+
+const branchesNavigation: SidebarItem[] = [
+  {
+    id: "branches-overview",
+    label: "Overview",
+    icon: <BarChart3 className="w-5 h-5" />,
+    path: "/dashboard/branches/overview",
+  },
+  {
+    id: "branches-locations",
+    label: "Locations",
+    icon: <MapPin className="w-5 h-5" />,
+    path: "/dashboard/branches/locations",
+  },
+  {
+    id: "branches-performance",
+    label: "Performance",
+    icon: <TrendingUp className="w-5 h-5" />,
+    path: "/dashboard/branches/performance",
+  },
+];
+
+const competitorsNavigation: SidebarItem[] = [
+  {
+    id: "competitors-analysis",
+    label: "Analysis",
+    icon: <BarChart3 className="w-5 h-5" />,
+    path: "/dashboard/competitors/analysis",
+  },
+  {
+    id: "competitors-tracking",
+    label: "Tracking",
+    icon: <TrendingUp className="w-5 h-5" />,
+    path: "/dashboard/competitors/tracking",
+  },
+  {
+    id: "competitors-benchmarks",
+    label: "Benchmarks",
+    icon: <Target className="w-5 h-5" />,
+    path: "/dashboard/competitors/benchmarks",
+  },
+];
+
+const departmentsNavigation: SidebarItem[] = [
+  {
+    id: "departments-overview",
+    label: "Overview",
+    icon: <BarChart3 className="w-5 h-5" />,
+    path: "/dashboard/departments/overview",
+  },
+  {
+    id: "departments-staff",
+    label: "Staff Management",
+    icon: <UserCheck className="w-5 h-5" />,
+    path: "/dashboard/departments/staff",
+  },
+  {
+    id: "departments-projects",
+    label: "Projects",
+    icon: <Briefcase className="w-5 h-5" />,
+    path: "/dashboard/departments/projects",
+  },
+  {
+    id: "departments-schedules",
+    label: "Schedules",
+    icon: <Calendar className="w-5 h-5" />,
+    path: "/dashboard/departments/schedules",
+  },
+];
+
+const reportsNavigation: SidebarItem[] = [
+  {
+    id: "reports-dashboard",
+    label: "Dashboard",
+    icon: <BarChart3 className="w-5 h-5" />,
+    path: "/dashboard/reports/dashboard",
+  },
+  {
+    id: "reports-financial",
+    label: "Financial Reports",
+    icon: <FileBarChart className="w-5 h-5" />,
+    path: "/dashboard/reports/financial",
+  },
+  {
+    id: "reports-alerts",
+    label: "Alerts",
+    icon: <Bell className="w-5 h-5" />,
+    path: "/dashboard/reports/alerts",
+  },
+  {
+    id: "reports-scheduled",
+    label: "Scheduled Reports",
+    icon: <Clock className="w-5 h-5" />,
+    path: "/dashboard/reports/scheduled",
   },
 ];
 
@@ -201,17 +207,82 @@ export const Sidebar = ({
   onToggleCollapse,
 }: SidebarProps) => {
   const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [currentView, setCurrentView] = useState<"main" | "branch">("main");
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return (
+        localStorage.getItem("theme") === "dark" ||
+        (!localStorage.getItem("theme") &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      );
+    }
+    return false;
+  });
 
-  const toggleExpanded = (itemId: string) => {
-    if (isCollapsed) return;
-    setExpandedItems((prev) =>
-      prev.includes(itemId)
-        ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId]
-    );
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+
+    if (typeof window !== "undefined") {
+      if (newTheme) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+    }
   };
+
+  const getCurrentNavigation = () => {
+    const pathname = location.pathname;
+
+    if (
+      pathname.startsWith("/dashboard/branches/") &&
+      !pathname.includes("/branch/")
+    ) {
+      return {
+        navigation: branchesNavigation,
+        title: "Branches",
+        backPath: "/dashboard",
+      };
+    }
+
+    if (pathname.startsWith("/dashboard/competitors/")) {
+      return {
+        navigation: competitorsNavigation,
+        title: "Competitors",
+        backPath: "/dashboard",
+      };
+    }
+
+    if (pathname.startsWith("/dashboard/departments/")) {
+      return {
+        navigation: departmentsNavigation,
+        title: "Departments",
+        backPath: "/dashboard",
+      };
+    }
+
+    if (pathname.startsWith("/dashboard/reports/")) {
+      return {
+        navigation: reportsNavigation,
+        title: "Reports & Alerts",
+        backPath: "/dashboard",
+      };
+    }
+
+    if (pathname.startsWith("/dashboard/branch/")) {
+      return {
+        navigation: branchSpecificNavigation,
+        title: "Branch Details",
+        backPath: "/dashboard/branches",
+      };
+    }
+
+    return { navigation: mainNavigation, title: "Halo", backPath: null };
+  };
+
+  const { navigation, title, backPath } = getCurrentNavigation();
 
   const isItemActive = (path: string) => {
     return (
@@ -219,113 +290,42 @@ export const Sidebar = ({
     );
   };
 
-  const isParentActive = (item: SidebarItem) => {
-    if (item.path && isItemActive(item.path)) return true;
-    if (item.children) {
-      return item.children.some(
-        (child) => child.path && isItemActive(child.path)
-      );
-    }
-    return false;
-  };
-
-  const renderNavItem = (item: SidebarItem, level: number = 0) => {
-    const hasChildren = item.children && item.children.length > 0;
-    const isExpanded = expandedItems.includes(item.id);
-    const isActive = item.path && isItemActive(item.path);
-    const isParentItemActive = isParentActive(item);
-
-    const paddingLeft =
-      level === 0
-        ? isCollapsed
-          ? "pl-4"
-          : "pl-6"
-        : isCollapsed
-        ? "pl-6"
-        : "pl-12";
-
-    if (isCollapsed && level > 0) return null;
+  const renderNavItem = (item: SidebarItem) => {
+    const isActive = isItemActive(item.path);
 
     return (
-      <div key={item.id}>
-        {hasChildren ? (
-          <button
-            onClick={() => toggleExpanded(item.id)}
-            className={`w-full flex items-center ${
-              isCollapsed ? "justify-center" : "justify-between"
-            } ${paddingLeft} ${
-              isCollapsed ? "px-4" : "pr-6"
-            } py-3 text-left text-sm font-medium transition-all duration-200 ${
-              isParentItemActive
-                ? "text-orange-500 bg-orange-50 border-r-2 border-orange-500"
-                : "text-gray-700 hover:text-orange-500 hover:bg-gray-50"
-            } group relative`}
-            title={isCollapsed ? item.label : ""}
-          >
-            <div
-              className={`flex items-center ${
-                isCollapsed ? "justify-center" : "space-x-3"
-              }`}
-            >
-              {item.icon}
-              {!isCollapsed && <span>{item.label}</span>}
-            </div>
-            {!isCollapsed &&
-              (isExpanded ? (
-                <ChevronDown className="w-4 h-4" />
-              ) : (
-                <ChevronRight className="w-4 h-4" />
-              ))}
-            {isCollapsed && (
-              <div className="absolute left-full top-0 ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50">
-                {item.label}
-                <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-              </div>
-            )}
-          </button>
-        ) : (
-          <NavLink
-            to={item.path || "#"}
-            onClick={onClose}
-            className={({ isActive: navIsActive }) =>
-              `block ${paddingLeft} ${
-                isCollapsed ? "px-4" : "pr-6"
-              } py-3 text-sm font-medium transition-all duration-200 ${
-                navIsActive || isActive
-                  ? "text-orange-500 bg-orange-50 border-r-2 border-orange-500"
-                  : "text-gray-700 hover:text-orange-500 hover:bg-gray-50"
-              } group relative`
-            }
-            title={isCollapsed ? item.label : ""}
-          >
-            <div
-              className={`flex items-center ${
-                isCollapsed ? "justify-center" : "space-x-3"
-              }`}
-            >
-              {item.icon}
-              {!isCollapsed && <span>{item.label}</span>}
-            </div>
-            {isCollapsed && (
-              <div className="absolute left-full top-0 ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50">
-                {item.label}
-                <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-              </div>
-            )}
-          </NavLink>
-        )}
-
-        {hasChildren && isExpanded && !isCollapsed && (
-          <div className="bg-gray-25">
-            {item.children?.map((child) => renderNavItem(child, level + 1))}
+      <NavLink
+        key={item.id}
+        to={item.path}
+        onClick={onClose}
+        className={({ isActive: navIsActive }) =>
+          `block ${
+            isCollapsed ? "px-4" : "px-6 pr-6"
+          } py-3 text-sm font-medium transition-all duration-200 ${
+            navIsActive || isActive
+              ? "text-orange-500 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 border-r-2 border-orange-500 dark:border-orange-400"
+              : "text-gray-700 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+          } group relative`
+        }
+        title={isCollapsed ? item.label : ""}
+      >
+        <div
+          className={`flex items-center ${
+            isCollapsed ? "justify-center" : "space-x-3"
+          }`}
+        >
+          {item.icon}
+          {!isCollapsed && <span>{item.label}</span>}
+        </div>
+        {isCollapsed && (
+          <div className="absolute left-full top-0 ml-2 px-3 py-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50">
+            {item.label}
+            <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 dark:bg-gray-100 rotate-45"></div>
           </div>
         )}
-      </div>
+      </NavLink>
     );
   };
-
-  const currentNavigation =
-    currentView === "main" ? mainNavigation : branchSpecificNavigation;
 
   return (
     <>
@@ -335,14 +335,14 @@ export const Sidebar = ({
         } ${isCollapsed ? "lg:w-16" : "lg:w-64"}`}
       >
         <div
-          className={`flex h-screen flex-col bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ${
+          className={`flex h-screen flex-col bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-300 ${
             isCollapsed ? "w-16" : "w-64"
           }`}
         >
           <div
             className={`flex items-center ${
               isCollapsed ? "justify-center px-4" : "justify-between px-6"
-            } py-4 border-b border-gray-200 flex-shrink-0`}
+            } py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0`}
           >
             {!isCollapsed && (
               <div className="flex items-center space-x-3">
@@ -350,49 +350,56 @@ export const Sidebar = ({
                   <span className="text-white font-bold text-sm">H</span>
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-gray-900">Halo</h1>
+                  <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {title}
+                  </h1>
                 </div>
               </div>
             )}
-            {isCollapsed && <div className="h-8"></div>}
+            {isCollapsed && (
+              <div className="h-8 w-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">H</span>
+              </div>
+            )}
+
             <button
               onClick={onToggleCollapse}
-              className={`hidden lg:block p-1.5 bg-orange-500 text-white hover:text-gray-700 hover:bg-orange-300 absolute  rounded-full transition-colors ${
-                isCollapsed ? "left-[50px] " : "left-[240px]"
+              className={`hidden lg:block p-1.5 bg-orange-500 hover:bg-orange-600 text-white absolute rounded-full transition-all duration-200 transform hover:scale-105 ${
+                isCollapsed ? "left-[50px]" : "left-[240px]"
               }`}
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               <ChevronRight
                 className={`w-4 h-4 transition-transform duration-200 ${
-                  isCollapsed ? "rotate-0 " : "rotate-180"
+                  isCollapsed ? "rotate-0" : "rotate-180"
                 }`}
               />
             </button>
           </div>
 
-          <nav className="flex-1 py-4 min-h-0">
-            <div className="space-y-1 h-full flex flex-col">
-              {currentNavigation.map((item) => renderNavItem(item))}
-            </div>
-          </nav>
-
-          {currentView === "branch" && !isCollapsed && (
-            <div className="border-t border-gray-200 p-4 flex-shrink-0">
-              <button
-                onClick={() => setCurrentView("main")}
-                className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+          {backPath && !isCollapsed && (
+            <div className="px-6 py-3 border-b border-gray-200 dark:border-gray-700">
+              <NavLink
+                to={backPath}
+                className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200"
               >
-                <ChevronRight className="w-4 h-4 mr-2 rotate-180" />
-                Back to Main Menu
-              </button>
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back</span>
+              </NavLink>
             </div>
           )}
+
+          <nav className="flex-1 py-4 min-h-0 overflow-y-auto">
+            <div className="space-y-1 h-full flex flex-col">
+              {navigation.map((item) => renderNavItem(item))}
+            </div>
+          </nav>
         </div>
       </div>
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 lg:hidden bg-gray-600 bg-opacity-50"
+          className="fixed inset-0 z-40 lg:hidden bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-70 transition-opacity duration-300"
           onClick={onClose}
         />
       )}

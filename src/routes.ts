@@ -26,12 +26,12 @@ export const ROUTES = {
   REPORTS_ALERTS: '/dashboard/reports/alerts',
   REPORTS_SCHEDULED: '/dashboard/reports/scheduled',
   
-  BRANCH_DETAIL: '/dashboard/branch',
-  BRANCH_DASHBOARD: '/dashboard/branch/dashboard',
-  BRANCH_STAFF: '/dashboard/branch/staff',
-  BRANCH_OPERATIONS: '/dashboard/branch/operations',
-  BRANCH_CUSTOMERS: '/dashboard/branch/customers',
-  BRANCH_REPORTS: '/dashboard/branch/reports',
+  BRANCH_DETAIL: '/dashboard/branch/:id',
+  BRANCH_DASHBOARD: '/dashboard/branch/:id/dashboard',
+  BRANCH_STAFF: '/dashboard/branch/:id/staff',
+  BRANCH_OPERATIONS: '/dashboard/branch/:id/operations',
+  BRANCH_CUSTOMERS: '/dashboard/branch/:id/customers',
+  BRANCH_REPORTS: '/dashboard/branch/:id/reports',
   
   FORGOT_PASSWORD: '/forgot-password',
 } as const;
