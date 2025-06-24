@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 
-// Import all page components from pages/private
 import { ControlCenterPage } from "../../pages/private/control-center";
 
 import {
@@ -54,7 +53,7 @@ export const Layout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-black transition-colors duration-200">
       <div className="flex">
         <Sidebar
           isOpen={sidebarOpen}
@@ -71,10 +70,9 @@ export const Layout = () => {
               <Route index element={<Navigate to="control-center" replace />} />
               <Route path="control-center" element={<ControlCenterPage />} />
 
-              {/* Branches Routes */}
               <Route path="branches" element={<BranchesPage />} />
               <Route
-                path="branches/overview"
+                path="branches/overview/:id"
                 element={<BranchesOverviewPage />}
               />
               <Route
@@ -86,7 +84,6 @@ export const Layout = () => {
                 element={<BranchPerformancePage />}
               />
 
-              {/* Competitors Routes */}
               <Route path="competitors" element={<CompetitorsPage />} />
               <Route
                 path="competitors/analysis"
@@ -101,7 +98,6 @@ export const Layout = () => {
                 element={<CompetitorsBenchmarksPage />}
               />
 
-              {/* Departments Routes */}
               <Route path="departments" element={<DepartmentsPage />} />
               <Route
                 path="departments/overview"
@@ -120,7 +116,6 @@ export const Layout = () => {
                 element={<DepartmentSchedulesPage />}
               />
 
-              {/* Reports Routes */}
               <Route path="reports" element={<ReportsPage />} />
               <Route
                 path="reports/dashboard"

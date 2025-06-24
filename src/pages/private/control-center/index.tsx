@@ -49,13 +49,13 @@ export const ControlCenterPage = () => {
   const getStatusColor = (status: Branch["status"]) => {
     switch (status) {
       case "active":
-        return "text-green-600 bg-green-100";
+        return "text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/30";
       case "maintenance":
-        return "text-yellow-600 bg-yellow-100";
+        return "text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30";
       case "closed":
-        return "text-gray-600 bg-gray-100";
+        return "text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800/30";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800/30";
     }
   };
 
@@ -74,17 +74,17 @@ export const ControlCenterPage = () => {
 
   if (error) {
     return (
-      <div className="h-screen flex items-center justify-center p-6">
+      <div className="h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-black transition-colors duration-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center py-12">
-            <MapPin className="w-16 h-16 text-red-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <MapPin className="w-16 h-16 text-red-400 dark:text-red-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Unable to Load Branches
             </h2>
-            <p className="text-gray-600 mb-6">{error}</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
             <button
               onClick={refreshBranches}
-              className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white rounded-lg transition-colors duration-200"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Try Again
@@ -96,7 +96,7 @@ export const ControlCenterPage = () => {
   }
 
   return (
-    <div className="h-full relative overflow-hidden p-6">
+    <div className="h-full relative overflow-hidden p-6 bg-gray-50 dark:bg-black transition-colors duration-200">
       <style>{`
         .leaflet-container {
           background: linear-gradient(
@@ -107,9 +107,22 @@ export const ControlCenterPage = () => {
           font-family: system-ui, -apple-system, sans-serif !important;
         }
 
+        .dark .leaflet-container {
+          background: linear-gradient(
+            135deg,
+            #1f2937 0%,
+            #111827 100%
+          ) !important;
+        }
+
         .leaflet-tile-pane {
           filter: grayscale(20%) contrast(1.1) brightness(0.95)
             hue-rotate(15deg);
+        }
+
+        .dark .leaflet-tile-pane {
+          filter: grayscale(30%) contrast(1.2) brightness(0.7)
+            hue-rotate(200deg);
         }
 
         .leaflet-control-zoom {
@@ -120,6 +133,12 @@ export const ControlCenterPage = () => {
           backdrop-filter: blur(20px) !important;
           background: rgba(255, 255, 255, 0.15) !important;
           border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .dark .leaflet-control-zoom {
+          background: rgba(0, 0, 0, 0.4) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
         }
 
         .leaflet-control-zoom a {
@@ -135,10 +154,20 @@ export const ControlCenterPage = () => {
           line-height: 40px !important;
         }
 
+        .dark .leaflet-control-zoom a {
+          background: rgba(255, 255, 255, 0.05) !important;
+          color: #f9fafb !important;
+        }
+
         .leaflet-control-zoom a:hover {
           background: rgba(255, 255, 255, 0.25) !important;
           transform: scale(1.05) !important;
           color: #111827 !important;
+        }
+
+        .dark .leaflet-control-zoom a:hover {
+          background: rgba(255, 255, 255, 0.15) !important;
+          color: #ffffff !important;
         }
 
         .leaflet-control-zoom a:first-child {
@@ -160,14 +189,30 @@ export const ControlCenterPage = () => {
           padding: 0 !important;
         }
 
+        .dark .leaflet-popup-content-wrapper {
+          background: rgba(17, 24, 39, 0.95) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6) !important;
+        }
+
         .leaflet-popup-content {
           margin: 16px !important;
+          color: #1f2937 !important;
+        }
+
+        .dark .leaflet-popup-content {
+          color: #f9fafb !important;
         }
 
         .leaflet-popup-tip {
           background: rgba(255, 255, 255, 0.95) !important;
           backdrop-filter: blur(20px) !important;
           border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .dark .leaflet-popup-tip {
+          background: rgba(17, 24, 39, 0.95) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         .leaflet-popup-close-button {
@@ -183,9 +228,18 @@ export const ControlCenterPage = () => {
           transition: all 0.2s ease !important;
         }
 
+        .dark .leaflet-popup-close-button {
+          background: rgba(239, 68, 68, 0.2) !important;
+          color: #ef4444 !important;
+        }
+
         .leaflet-popup-close-button:hover {
           background: rgba(239, 68, 68, 0.2) !important;
           transform: scale(1.1) !important;
+        }
+
+        .dark .leaflet-popup-close-button:hover {
+          background: rgba(239, 68, 68, 0.3) !important;
         }
 
         .custom-marker {
@@ -193,9 +247,17 @@ export const ControlCenterPage = () => {
           transition: all 0.3s ease;
         }
 
+        .dark .custom-marker {
+          filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+        }
+
         .custom-marker:hover {
           transform: scale(1.1);
           filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+        }
+
+        .dark .custom-marker:hover {
+          filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.8));
         }
 
         .user-location-marker {
@@ -219,6 +281,13 @@ export const ControlCenterPage = () => {
           border: 1px solid rgba(255, 255, 255, 0.2) !important;
           font-size: 11px !important;
           padding: 4px 8px !important;
+          color: #1f2937 !important;
+        }
+
+        .dark .leaflet-control-attribution {
+          background: rgba(17, 24, 39, 0.8) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          color: #f9fafb !important;
         }
 
         .legend-card {
@@ -228,10 +297,21 @@ export const ControlCenterPage = () => {
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
         }
 
+        .dark .legend-card {
+          background: rgba(0, 0, 0, 0.3) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+        }
+
         .status-indicator {
           background: rgba(255, 255, 255, 0.1) !important;
           backdrop-filter: blur(15px) !important;
           border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        }
+
+        .dark .status-indicator {
+          background: rgba(0, 0, 0, 0.2) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
       `}</style>
 
@@ -247,7 +327,7 @@ export const ControlCenterPage = () => {
       <div className="absolute top-8 left-25 z-[999]">
         <button
           onClick={() => setShowBranchPanel(true)}
-          className="group relative px-4 py-3 bg-white/40 backdrop-blur-md border border-white/30 rounded-2xl shadow-xl hover:bg-white/30 transition-all duration-300 hover:scale-105"
+          className="group relative px-4 py-3 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/30 dark:border-white/20 rounded-2xl shadow-xl hover:bg-white/30 dark:hover:bg-black/50 transition-all duration-300 hover:scale-105"
           style={{
             background: "rgba(255, 255, 255, 0.15)",
             backdropFilter: "blur(20px)",
@@ -256,54 +336,54 @@ export const ControlCenterPage = () => {
           }}
         >
           <div className="flex items-center space-x-3">
-            <List className="w-6 h-6 text-gray-900" />
-            <span className="font-semibold text-gray-900 text-base">
+            <List className="w-6 h-6 text-gray-900 dark:text-white" />
+            <span className="font-semibold text-gray-900 dark:text-white text-base">
               View Branches
             </span>
-            <div className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+            <div className="bg-orange-500 dark:bg-orange-600 text-white text-sm px-3 py-1 rounded-full font-bold">
               {filteredBranches.length}
             </div>
           </div>
 
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400/10 to-purple-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400/10 to-purple-400/10 dark:from-blue-600/20 dark:to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </button>
       </div>
 
       {showBranchPanel && (
         <>
           <div
-            className="absolute inset-0   z-[998] transition-all duration-300"
+            className="absolute inset-0 z-[998] transition-all duration-300"
             onClick={() => setShowBranchPanel(false)}
           />
 
           <div className="absolute top-10 right-10 h-[90%] w-96 z-[1000] transform transition-transform duration-500 ease-out">
             <div
-              className="h-full relative overflow-hidden"
+              className="h-full relative overflow-hidden rounded-2xl"
               style={{
                 background: "rgba(255, 255, 255, 0.7)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
               }}
             >
-              <div className="relative p-4 border-b border-white/20">
+              <div className="relative p-4 border-b border-white/20 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-xl">
                 <div className="flex items-center justify-between p-2">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       Nearby Branches
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {filteredBranches.length} locations found
                     </p>
                     {selectedBranch && (
-                      <p className="text-sm text-orange-600 mt-1">
+                      <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
                         {selectedBranch.name} selected
                       </p>
                     )}
                   </div>
                   <button
                     onClick={() => setShowBranchPanel(false)}
-                    className="p-2 hover:bg-white/20 rounded-full transition-colors duration-200"
+                    className="p-2 hover:bg-white/20 dark:hover:bg-black/20 rounded-full transition-colors duration-200"
                   >
-                    <X className="w-5 h-5 text-gray-700" />
+                    <X className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                   </button>
                 </div>
 
@@ -313,14 +393,14 @@ export const ControlCenterPage = () => {
                     placeholder="Search branches..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-xl placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-transparent backdrop-blur-sm"
+                    className="w-full px-4 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-400/50 dark:focus:ring-orange-500/50 focus:border-transparent backdrop-blur-sm"
                   />
 
                   <div className="flex space-x-2">
                     <select
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value as any)}
-                      className="flex-1 px-3 py-2 bg-white/20 border border-white/30 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400/50 backdrop-blur-sm text-sm"
+                      className="flex-1 px-3 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-400/50 dark:focus:ring-orange-500/50 backdrop-blur-sm text-sm"
                     >
                       <option value="all">All Status</option>
                       <option value="active">Active</option>
@@ -331,7 +411,7 @@ export const ControlCenterPage = () => {
                     <select
                       value={typeFilter}
                       onChange={(e) => setTypeFilter(e.target.value as any)}
-                      className="flex-1 px-3 py-2 bg-white/20 border border-white/30 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400/50 backdrop-blur-sm text-sm"
+                      className="flex-1 px-3 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-400/50 dark:focus:ring-orange-500/50 backdrop-blur-sm text-sm"
                     >
                       <option value="all">All Types</option>
                       <option value="main">Main</option>
@@ -342,7 +422,7 @@ export const ControlCenterPage = () => {
                 </div>
               </div>
 
-              <div className="relative flex-1 overflow-y-auto max-h-[calc(94vh-280px)] min-h-0">
+              <div className="relative flex-1 overflow-y-auto max-h-[calc(94vh-280px)] min-h-0 bg-white/60 dark:bg-black/60 backdrop-blur-xl">
                 {filteredBranches.map((branch, index) => {
                   const distance = userLocation
                     ? calculateDistance(
@@ -357,9 +437,9 @@ export const ControlCenterPage = () => {
                     <div
                       key={branch.id}
                       onClick={() => handleBranchSelect(branch)}
-                      className={`p-4 border-b border-white/10 cursor-pointer hover:bg-white/20 transition-all duration-300 ${
+                      className={`p-4 border-b border-white/10 dark:border-white/5 cursor-pointer hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 ${
                         selectedBranch?.id === branch.id
-                          ? "bg-orange-400/20 border-orange-400/30"
+                          ? "bg-orange-400/20 dark:bg-orange-600/20 border-orange-400/30 dark:border-orange-500/30"
                           : ""
                       }`}
                       style={{
@@ -371,43 +451,43 @@ export const ControlCenterPage = () => {
                           <span className="text-lg filter drop-shadow-sm">
                             {getTypeIcon(branch.type)}
                           </span>
-                          <h4 className="font-medium text-gray-900 text-sm">
+                          <h4 className="font-medium text-gray-900 dark:text-white text-sm">
                             {branch.name}
                           </h4>
                         </div>
                         {distance && (
-                          <span className="text-xs text-gray-600 bg-white/30 px-2 py-1 rounded-full">
+                          <span className="text-xs text-gray-600 dark:text-gray-400 bg-white/30 dark:bg-black/30 px-2 py-1 rounded-full">
                             {distance} km
                           </span>
                         )}
                       </div>
 
                       <div className="flex items-start space-x-2 mb-2">
-                        <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-700 line-clamp-2">
+                        <MapPin className="w-4 h-4 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
                           {branch.address}
                         </p>
                       </div>
 
                       {branch.rating && (
                         <div className="flex items-center space-x-2 mb-2">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <p className="text-sm text-gray-700">
+                          <Star className="w-4 h-4 text-yellow-500 dark:text-yellow-400 fill-current" />
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
                             {branch.rating}/5
                           </p>
                         </div>
                       )}
 
                       <div className="flex items-center space-x-2 mb-3">
-                        <Clock className="w-4 h-4 text-gray-500" />
-                        <p className="text-sm text-gray-700">
+                        <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
                           {branch.workingHours}
                         </p>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-400/30 text-blue-900 backdrop-blur-sm">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-400/30 dark:bg-blue-600/30 text-blue-900 dark:text-blue-200 backdrop-blur-sm">
                             {branch.type.toUpperCase()}
                           </span>
                           <span
@@ -425,8 +505,8 @@ export const ControlCenterPage = () => {
 
                 {filteredBranches.length === 0 && !loading && (
                   <div className="p-8 text-center">
-                    <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4 filter drop-shadow-sm" />
-                    <p className="text-gray-600">
+                    <Building2 className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4 filter drop-shadow-sm" />
+                    <p className="text-gray-600 dark:text-gray-400">
                       No branches found matching your criteria
                     </p>
                   </div>
@@ -434,8 +514,10 @@ export const ControlCenterPage = () => {
 
                 {loading && (
                   <div className="p-8 text-center">
-                    <RefreshCw className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-4 filter drop-shadow-sm" />
-                    <p className="text-gray-600">Loading branches...</p>
+                    <RefreshCw className="w-8 h-8 text-orange-500 dark:text-orange-400 animate-spin mx-auto mb-4 filter drop-shadow-sm" />
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Loading branches...
+                    </p>
                   </div>
                 )}
               </div>
