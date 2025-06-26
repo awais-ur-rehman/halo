@@ -85,12 +85,7 @@ const branchesNavigation: SidebarItem[] = [
     icon: <BarChart3 className="w-5 h-5" />,
     path: "/dashboard/branches/overview",
   },
-  {
-    id: "branches-locations",
-    label: "Locations",
-    icon: <MapPin className="w-5 h-5" />,
-    path: "/dashboard/branches/locations",
-  },
+
   {
     id: "branches-performance",
     label: "Performance",
