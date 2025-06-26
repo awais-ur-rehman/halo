@@ -1,6 +1,4 @@
-// src/components/Layout/Sidebar/index.tsx
-import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 import {
   Settings,
   Building2,
@@ -85,7 +83,6 @@ const branchesNavigation: SidebarItem[] = [
     icon: <BarChart3 className="w-5 h-5" />,
     path: "/dashboard/branches/overview",
   },
-
   {
     id: "branches-performance",
     label: "Performance",
@@ -169,39 +166,6 @@ const reportsNavigation: SidebarItem[] = [
   },
 ];
 
-const branchSpecificNavigation: SidebarItem[] = [
-  {
-    id: "branch-dashboard",
-    label: "Branch Dashboard",
-    icon: <BarChart3 className="w-5 h-5" />,
-    path: "/dashboard/branch/dashboard",
-  },
-  {
-    id: "branch-staff",
-    label: "Staff",
-    icon: <Users className="w-5 h-5" />,
-    path: "/dashboard/branch/staff",
-  },
-  {
-    id: "branch-operations",
-    label: "Operations",
-    icon: <Settings className="w-5 h-5" />,
-    path: "/dashboard/branch/operations",
-  },
-  {
-    id: "branch-customers",
-    label: "Customers",
-    icon: <UserCheck className="w-5 h-5" />,
-    path: "/dashboard/branch/customers",
-  },
-  {
-    id: "branch-reports",
-    label: "Reports",
-    icon: <FileText className="w-5 h-5" />,
-    path: "/dashboard/branch/reports",
-  },
-];
-
 export const Sidebar = ({
   isOpen,
   onClose,
@@ -213,14 +177,20 @@ export const Sidebar = ({
   const getCurrentNavigation = () => {
     const pathname = location.pathname;
 
-    if (
-      pathname.startsWith("/dashboard/branches/") &&
-      !pathname.includes("/branch/")
-    ) {
+    // Check if we're viewing a specific branch (overview or performance)
+    if (pathname.match(/\/dashboard\/branches\/(overview|performance)\/(.+)/)) {
+      const match = pathname.match(
+        /\/dashboard\/branches\/(overview|performance)\/(.+)/
+      );
+      const branchId = match?.[2];
+
       return {
-        navigation: branchesNavigation,
-        title: "Branches",
-        backPath: "/dashboard",
+        navigation: branchesNavigation.map((item) => ({
+          ...item,
+          path: `${item.path}/${branchId}`,
+        })),
+        title: "Branch Details",
+        backPath: "/dashboard/branches",
       };
     }
 
@@ -245,14 +215,6 @@ export const Sidebar = ({
         navigation: reportsNavigation,
         title: "Reports & Alerts",
         backPath: "/dashboard",
-      };
-    }
-
-    if (pathname.startsWith("/dashboard/branch/")) {
-      return {
-        navigation: branchSpecificNavigation,
-        title: "Branch Details",
-        backPath: "/dashboard/branches",
       };
     }
 
