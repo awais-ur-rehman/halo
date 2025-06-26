@@ -14,6 +14,9 @@ import {
   MessageSquare,
   Award,
   AlertCircle,
+  Smile,
+  Frown,
+  Meh,
 } from "lucide-react";
 import { useBranchesData } from "../../../../hook/useBranchesData";
 
@@ -62,9 +65,21 @@ const MetricRow = ({
         </div>
         {trend && (
           <div className="text-gray-400">
-            {trend === "up" && <TrendingUp className="w-4 h-4" />}
-            {trend === "down" && <TrendingDown className="w-4 h-4" />}
-            {trend === "neutral" && <Minus className="w-4 h-4" />}
+            {trend === "up" && (
+              <TrendingUp
+                className="w-4 h-4 text-green-500"
+                strokeWidth={2.5}
+              />
+            )}
+            {trend === "down" && (
+              <TrendingDown
+                className="w-4 h-4 text-red-500"
+                strokeWidth={2.5}
+              />
+            )}
+            {trend === "neutral" && (
+              <Minus className="w-4 h-4 text-yellow-400" strokeWidth={2.5} />
+            )}
           </div>
         )}
       </div>
@@ -99,11 +114,14 @@ const SentimentBar = ({
 
       <div className="flex rounded-lg overflow-hidden h-2">
         <div
-          className="bg-gray-900 dark:bg-white"
+          className="bg-green-400 dark:bg-white"
           style={{ width: `${positivePercent}%` }}
         />
-        <div className="bg-gray-400" style={{ width: `${negativePercent}%` }} />
-        <div className="bg-gray-300" style={{ width: `${neutralPercent}%` }} />
+        <div className="bg-red-400" style={{ width: `${negativePercent}%` }} />
+        <div
+          className="bg-yellow-300"
+          style={{ width: `${neutralPercent}%` }}
+        />
       </div>
 
       <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
@@ -291,13 +309,33 @@ const ReviewsList = ({ reviews }: { reviews: any[] }) => {
   const getSentimentIcon = (sentiment: string) => {
     switch (sentiment) {
       case "Positive":
-        return <TrendingUp className="w-4 h-4 text-gray-900 dark:text-white" />;
+        return (
+          <div className="flex items-center space-x-1">
+            <Smile className="w-4 h-4 text-green-500" />
+            <span className="text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-400 px-2 py-0.5 rounded-full">
+              Positive
+            </span>
+          </div>
+        );
       case "Negative":
         return (
-          <TrendingDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+          <div className="flex items-center space-x-1">
+            <Frown className="w-4 h-4 text-red-500" />
+            <span className="text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 px-2 py-0.5 rounded-full">
+              Negative
+            </span>
+          </div>
         );
+      case "Neutral":
       default:
-        return <Minus className="w-4 h-4 text-gray-400" />;
+        return (
+          <div className="flex items-center space-x-1">
+            <Meh className="w-4 h-4 text-yellow-500" />
+            <span className="text-xs font-medium text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 dark:text-yellow-400 px-2 py-0.5 rounded-full">
+              Neutral
+            </span>
+          </div>
+        );
     }
   };
 
@@ -306,12 +344,12 @@ const ReviewsList = ({ reviews }: { reviews: any[] }) => {
       {reviews.slice(0, 6).map((review, index) => (
         <div key={review.review_id} className="space-y-3">
           <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-2">
-              {getSentimentIcon(review.sentiment)}
+            <div className="flex space-x-2">
               <div>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {review.reviewer.name}
                 </p>
+
                 <div className="flex items-center space-x-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -325,6 +363,7 @@ const ReviewsList = ({ reviews }: { reviews: any[] }) => {
                   ))}
                 </div>
               </div>
+              {getSentimentIcon(review.sentiment)}
             </div>
             <span className="text-xs text-gray-500 dark:text-gray-400">
               {new Date(review.date).toLocaleDateString()}
@@ -427,7 +466,12 @@ export const BranchesOverviewPage = () => {
 
           <div className="text-right">
             <div className="text-xl font-bold text-orange-600 dark:text-orange-400 mb-2">
-              {branch.overall_score}
+              <h1 className="flex items-center">
+                {branch.overall_score}
+                <span className="ms-2">
+                  <Star fill="currentColor" />
+                </span>
+              </h1>
             </div>
             <span
               className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getGradeBadgeColor(
