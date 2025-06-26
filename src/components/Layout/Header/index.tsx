@@ -46,6 +46,9 @@ const getBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
           }
         }
         break;
+      case "compare-branches":
+        breadcrumbs.push({ label: "Compare Branches" });
+        break;
       case "competitors":
         breadcrumbs.push({
           label: "Competitors",
@@ -125,7 +128,6 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check for saved theme preference or default to light mode
     if (typeof window !== "undefined") {
       return (
         localStorage.getItem("theme") === "dark" ||
@@ -135,19 +137,12 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
     }
     return false;
   });
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-
-  const breadcrumbs = getBreadcrumbs(location.pathname);
-
-  const handleLogout = () => {
-    logout();
-    setShowProfileMenu(false);
-  };
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
+    console.log(newTheme);
     setIsDarkMode(newTheme);
+    console.log(newTheme);
 
     if (typeof window !== "undefined") {
       if (newTheme) {
@@ -158,6 +153,16 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
         localStorage.setItem("theme", "light");
       }
     }
+  };
+
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const breadcrumbs = getBreadcrumbs(location.pathname);
+
+  const handleLogout = () => {
+    logout();
+    setShowProfileMenu(false);
   };
 
   const notifications = [

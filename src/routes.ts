@@ -9,6 +9,8 @@ export const ROUTES = {
   BRANCHES_LOCATIONS: '/dashboard/branches/locations',
   BRANCHES_PERFORMANCE: '/dashboard/branches/performance',
   
+  COMPARE_BRANCHES: '/dashboard/compare-branches',
+  
   COMPETITORS: '/dashboard/competitors',
   COMPETITORS_ANALYSIS: '/dashboard/competitors/analysis',
   COMPETITORS_TRACKING: '/dashboard/competitors/tracking',

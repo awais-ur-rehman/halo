@@ -35,6 +35,7 @@ import {
   AlertsCenterPage,
   ScheduledReportsPage,
 } from "../../pages/private/reports";
+import { CompareBranchesPage } from "../../pages/private/compare-branches";
 
 export const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -82,6 +83,11 @@ export const Layout = () => {
               <Route
                 path="branches/performance"
                 element={<BranchPerformancePage />}
+              />
+
+              <Route
+                path="compare-branches"
+                element={<CompareBranchesPage />}
               />
 
               <Route path="competitors" element={<CompetitorsPage />} />

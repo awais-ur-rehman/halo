@@ -1,5 +1,5 @@
 // src/components/Layout/Sidebar/index.tsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Settings,
@@ -21,6 +21,7 @@ import {
   Sun,
   Moon,
   ArrowLeft,
+  GitCompare,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -47,9 +48,15 @@ const mainNavigation: SidebarItem[] = [
   },
   {
     id: "branches",
-    label: "Branches",
+    label: "Branch Intelligence",
     icon: <Building2 className="w-5 h-5" />,
     path: "/dashboard/branches",
+  },
+  {
+    id: "compare-branches",
+    label: "Compare Branches",
+    icon: <GitCompare className="w-5 h-5" />,
+    path: "/dashboard/compare-branches",
   },
   {
     id: "competitors",
@@ -207,31 +214,6 @@ export const Sidebar = ({
   onToggleCollapse,
 }: SidebarProps) => {
   const location = useLocation();
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem("theme") === "dark" ||
-        (!localStorage.getItem("theme") &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      );
-    }
-    return false;
-  });
-
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-
-    if (typeof window !== "undefined") {
-      if (newTheme) {
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-      }
-    }
-  };
 
   const getCurrentNavigation = () => {
     const pathname = location.pathname;
@@ -332,7 +314,7 @@ export const Sidebar = ({
       <div
         className={`fixed inset-y-0 left-0 z-50 lg:relative lg:inset-auto lg:flex lg:flex-col transition-all duration-300 ${
           isOpen ? "block" : "hidden lg:block"
-        } ${isCollapsed ? "lg:w-16" : "lg:w-64"}`}
+        } ${isCollapsed ? "lg:w-16 " : "lg:w-64"}`}
       >
         <div
           className={`flex h-screen flex-col bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-300 ${

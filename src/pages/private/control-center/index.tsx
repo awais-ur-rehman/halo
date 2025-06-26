@@ -97,7 +97,7 @@ export const ControlCenterPage = () => {
 
   return (
     <div className="h-full relative overflow-hidden p-6 bg-gray-50 dark:bg-black transition-colors duration-200">
-      <style>{`
+      {/* <style>{`
         .leaflet-container {
           background: linear-gradient(
             135deg,
@@ -313,7 +313,7 @@ export const ControlCenterPage = () => {
           background: rgba(0, 0, 0, 0.2) !important;
           border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
-      `}</style>
+      `}</style> */}
 
       <div className="absolute inset-0 p-6">
         <GoogleMap
@@ -324,7 +324,7 @@ export const ControlCenterPage = () => {
         />
       </div>
 
-      <div className="absolute top-8 left-25 z-[999]">
+      <div className="absolute top-8 left-10 z-[999]">
         <button
           onClick={() => setShowBranchPanel(true)}
           className="group relative px-4 py-3 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/30 dark:border-white/20 rounded-2xl shadow-xl hover:bg-white/30 dark:hover:bg-black/50 transition-all duration-300 hover:scale-105"
@@ -337,12 +337,9 @@ export const ControlCenterPage = () => {
         >
           <div className="flex items-center space-x-3">
             <List className="w-6 h-6 text-gray-900 dark:text-white" />
-            <span className="font-semibold text-gray-900 dark:text-white text-base">
+            <span className=" text-gray-900 dark:text-white text-base">
               View Branches
             </span>
-            <div className="bg-orange-500 dark:bg-orange-600 text-white text-sm px-3 py-1 rounded-full font-bold">
-              {filteredBranches.length}
-            </div>
           </div>
 
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400/10 to-purple-400/10 dark:from-blue-600/20 dark:to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

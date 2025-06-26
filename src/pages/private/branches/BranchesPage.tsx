@@ -309,7 +309,7 @@ export const BranchesPage = () => {
   const displayedBranches = filteredBranches();
 
   return (
-    <div className="p-6 bg-gray-50 dark:bg-black min-h-screen transition-colors duration-200">
+    <div className="p-6 bg-white dark:bg-black h-full transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -328,7 +328,7 @@ export const BranchesPage = () => {
               icon={
                 <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               }
-              color="text-blue-600 dark:text-blue-400"
+              color="text-black dark:text-blue-400"
               description={`Avg Score: ${stats.averageScore}`}
             />
             <StatsCard
@@ -337,7 +337,7 @@ export const BranchesPage = () => {
               icon={
                 <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
               }
-              color="text-green-600 dark:text-green-400"
+              color="text-black dark:text-green-400"
               description={`${(
                 (stats.gradeDistribution.A / stats.totalBranches) *
                 100
@@ -349,7 +349,7 @@ export const BranchesPage = () => {
               icon={
                 <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
               }
-              color="text-red-600 dark:text-red-400"
+              color="text-black dark:text-red-400"
               description={`${stats.totalIssues} total issues`}
             />
             <StatsCard
@@ -358,7 +358,7 @@ export const BranchesPage = () => {
               icon={
                 <Star className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
               }
-              color="text-yellow-600 dark:text-yellow-400"
+              color="text-dark dark:text-yellow-400"
               description="Customer feedback"
             />
           </div>

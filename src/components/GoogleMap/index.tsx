@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigation, RefreshCw, AlertCircle, Star } from "lucide-react";
+import { Navigation, RefreshCw, AlertCircle } from "lucide-react";
 import type { Branch, UserLocation } from "../../hook/useControlCenter";
 
 interface GoogleMapProps {
@@ -66,16 +66,36 @@ export const GoogleMap = ({
     if (!mapRef.current || !userLocation || !window.L) return;
 
     try {
-      const map = window.L.map(mapRef.current).setView(
-        [userLocation.lat, userLocation.lng],
-        12
-      );
+      const map = window.L.map(mapRef.current, {
+        zoomControl: false,
+        attributionControl: false,
+      }).setView([userLocation.lat, userLocation.lng], 12);
 
-      window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      }).addTo(map);
+      const isDark = document.documentElement.classList.contains("dark");
+
+      if (isDark) {
+        window.L.tileLayer(
+          "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+          {
+            maxZoom: 19,
+            attribution: "© CartoDB",
+          }
+        ).addTo(map);
+      } else {
+        window.L.tileLayer(
+          "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+          {
+            maxZoom: 19,
+            attribution: "© CartoDB",
+          }
+        ).addTo(map);
+      }
+
+      window.L.control
+        .zoom({
+          position: "topright",
+        })
+        .addTo(map);
 
       leafletMapRef.current = map;
 
@@ -83,22 +103,21 @@ export const GoogleMap = ({
         className: "user-location-marker",
         html: `
           <div style="
-            width: 20px; 
-            height: 20px; 
-            background-color: #4285F4; 
-            border: 3px solid white; 
+            width: 16px; 
+            height: 16px; 
+            background: #3B82F6; 
+            border: 2px solid white; 
             border-radius: 50%; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
           "></div>
         `,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10],
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
       });
 
-      window.L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
-        .addTo(map)
-        .bindPopup("<b>Your Location</b>")
-        .openPopup();
+      window.L.marker([userLocation.lat, userLocation.lng], {
+        icon: userIcon,
+      }).addTo(map);
 
       setMapLoaded(true);
       setMapError(null);
@@ -109,46 +128,31 @@ export const GoogleMap = ({
   };
 
   const createCustomIcon = (type: Branch["type"], status: Branch["status"]) => {
-    let color = "#FF6B35";
-    if (status === "maintenance") color = "#FFC107";
-    if (status === "closed") color = "#6C757D";
+    let icon = "🏦";
+    if (type === "atm") icon = "🏧";
+    if (type === "main") icon = "🏛️";
 
-    let symbol = "🏦";
-    if (type === "atm") symbol = "🏧";
-    if (type === "main") symbol = "🏛️";
+    const opacity = status === "active" ? "0.15" : "0.08";
 
     return window.L.divIcon({
       className: "custom-marker",
       html: `
-        <div style="position: relative;">
-          <div style="
-            width: 32px; 
-            height: 40px; 
-            background-color: ${color}; 
-            border-radius: 50% 50% 50% 0; 
-            transform: rotate(-45deg);
-            border: 3px solid white;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-          "></div>
-          <div style="
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            transform: rotate(45deg);
-          ">${symbol}</div>
-        </div>
+        <div style="
+          width: 32px; 
+          height: 32px; 
+          background: rgba(59, 130, 246, ${opacity}); 
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          transition: all 0.2s ease;
+        ">${icon}</div>
       `,
-      iconSize: [32, 40],
-      iconAnchor: [16, 40],
-      popupAnchor: [0, -40],
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16],
     });
   };
 
@@ -169,98 +173,16 @@ export const GoogleMap = ({
       ).addTo(leafletMapRef.current);
 
       const popupContent = `
-        <div style="max-width: 280px; font-family: system-ui, -apple-system, sans-serif;">
-          <h3 style="margin: 0 0 12px 0; color: #1f2937; font-size: 18px; font-weight: 600;">
+        <div style="font-family: system-ui; padding: 8px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937;">
             ${branch.name}
           </h3>
-          
-          <div style="display: flex; align-items: start; gap: 8px; margin-bottom: 8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" style="margin-top: 2px; flex-shrink: 0;">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-            <span style="color: #6b7280; font-size: 14px; line-height: 1.4;">
-              ${branch.address}
-            </span>
-          </div>
-          
-          ${
-            branch.rating
-              ? `
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2">
-                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-              </svg>
-              <span style="color: #6b7280; font-size: 14px; font-weight: 500;">
-                ${branch.rating}/5 Rating
-              </span>
-            </div>
-          `
-              : ""
-          }
-          
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12,6 12,12 16,14"/>
-            </svg>
-            <span style="color: ${
-              branch.status === "active"
-                ? "#059669"
-                : branch.status === "maintenance"
-                ? "#d97706"
-                : "#6b7280"
-            }; font-size: 14px; font-weight: 500;">
-              ${branch.workingHours}
-            </span>
-          </div>
-          
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="
-              padding: 4px 12px; 
-              border-radius: 16px; 
-              font-size: 12px; 
-              font-weight: 600;
-              background-color: ${
-                branch.type === "main"
-                  ? "#dbeafe"
-                  : branch.type === "branch"
-                  ? "#fef3c7"
-                  : "#f3f4f6"
-              };
-              color: ${
-                branch.type === "main"
-                  ? "#1e40af"
-                  : branch.type === "branch"
-                  ? "#92400e"
-                  : "#374151"
-              };
-            ">
-              ${branch.type.toUpperCase()}
-            </span>
-            <span style="
-              padding: 4px 12px; 
-              border-radius: 16px; 
-              font-size: 12px; 
-              font-weight: 600;
-              background-color: ${
-                branch.status === "active"
-                  ? "#d1fae5"
-                  : branch.status === "maintenance"
-                  ? "#fef3c7"
-                  : "#f3f4f6"
-              };
-              color: ${
-                branch.status === "active"
-                  ? "#065f46"
-                  : branch.status === "maintenance"
-                  ? "#92400e"
-                  : "#374151"
-              };
-            ">
-              ${branch.status.toUpperCase()}
-            </span>
-          </div>
+          <p style="margin: 0 0 6px 0; font-size: 13px; color: #6b7280;">
+            ${branch.address}
+          </p>
+          <p style="margin: 0; font-size: 13px; color: #374151;">
+            ${branch.workingHours}
+          </p>
         </div>
       `;
 
@@ -311,12 +233,158 @@ export const GoogleMap = ({
 
   return (
     <div className="relative w-full h-full">
-      <div ref={mapRef} className="w-full h-full rounded-lg shadow-sm" />
+      <style>{`
+        .leaflet-container {
+          background: #f8fafc;
+          font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .dark .leaflet-container {
+          background: #0a0a0a;
+        }
+
+        .leaflet-tile-pane {
+          filter: contrast(1.1) brightness(0.95);
+        }
+
+        .dark .leaflet-tile-pane {
+          filter: contrast(1.3) brightness(0.8) saturate(0.7) hue-rotate(200deg);
+        }
+
+        .leaflet-control-zoom {
+          border: none;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+          border-radius: 6px;
+          overflow: hidden;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+        }
+
+        .dark .leaflet-control-zoom {
+          background: rgba(26, 26, 26, 0.95);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .leaflet-control-zoom a {
+          background: transparent;
+          color: #4a5568;
+          border: none;
+          font-weight: 500;
+          width: 28px;
+          height: 28px;
+          line-height: 28px;
+          font-size: 14px;
+          transition: all 0.2s ease;
+        }
+
+        .dark .leaflet-control-zoom a {
+          color: #a0aec0;
+        }
+
+        .leaflet-control-zoom a:hover {
+          background: rgba(0, 0, 0, 0.05);
+          color: #1a202c;
+        }
+
+        .dark .leaflet-control-zoom a:hover {
+          background: rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+        }
+
+        .leaflet-popup-content-wrapper {
+          background: rgba(255, 255, 255, 0.98);
+          border-radius: 8px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          padding: 0;
+          backdrop-filter: blur(10px);
+        }
+
+        .dark .leaflet-popup-content-wrapper {
+          background: rgba(26, 26, 26, 0.98);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .leaflet-popup-content {
+          margin: 0;
+          color: #2d3748;
+        }
+
+        .dark .leaflet-popup-content {
+          color: #e2e8f0;
+        }
+
+        .leaflet-popup-tip {
+          background: rgba(255, 255, 255, 0.98);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .dark .leaflet-popup-tip {
+          background: rgba(26, 26, 26, 0.98);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .leaflet-popup-close-button {
+          background: rgba(239, 68, 68, 0.1);
+          color: #e53e3e;
+          border-radius: 50%;
+          width: 18px;
+          height: 18px;
+          font-size: 11px;
+          font-weight: bold;
+          right: 4px;
+          top: 4px;
+          transition: all 0.2s ease;
+        }
+
+        .dark .leaflet-popup-close-button {
+          background: rgba(239, 68, 68, 0.15);
+          color: #fc8181;
+        }
+
+        .leaflet-popup-close-button:hover {
+          background: rgba(239, 68, 68, 0.2);
+          transform: scale(1.05);
+        }
+
+        .dark .leaflet-popup-close-button:hover {
+          background: rgba(239, 68, 68, 0.25);
+        }
+
+        .custom-marker {
+          transition: all 0.2s ease;
+        }
+
+        .custom-marker:hover {
+          transform: scale(1.1);
+        }
+
+        .custom-marker:hover > div {
+          background: rgba(59, 130, 246, 0.25) !important;
+          border-color: rgba(59, 130, 246, 0.5) !important;
+        }
+
+        .user-location-marker {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+      `}</style>
+
+      <div ref={mapRef} className="w-full h-full rounded-lg" />
 
       {loading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg z-[1000]">
           <div className="flex items-center space-x-2">
-            <RefreshCw className="w-5 h-5 text-orange-500 animate-spin" />
+            <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />
             <span className="text-gray-700 font-medium">
               Loading branches...
             </span>
@@ -325,11 +393,11 @@ export const GoogleMap = ({
       )}
 
       {mapLoaded && (
-        <div className="absolute bottom-4 left-4 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm z-[1000]">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-xs font-medium text-gray-700">
-              Map Ready • {branches.length} locations
+        <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-md px-2 py-1 shadow-sm z-[1000]">
+          <div className="flex items-center space-x-1">
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+              {branches.length}
             </span>
           </div>
         </div>
