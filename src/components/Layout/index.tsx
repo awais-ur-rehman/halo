@@ -77,12 +77,12 @@ export const Layout = () => {
                 element={<BranchesOverviewPage />}
               />
               <Route
-                path="branches/locations"
-                element={<BranchLocationsPage />}
+                path="branches/performance/:id"
+                element={<BranchPerformancePage />}
               />
               <Route
-                path="branches/performance"
-                element={<BranchPerformancePage />}
+                path="branches/locations"
+                element={<BranchLocationsPage />}
               />
 
               <Route
