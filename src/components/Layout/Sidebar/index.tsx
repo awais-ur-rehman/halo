@@ -52,22 +52,23 @@ const mainNavigation: SidebarItem[] = [
   },
   {
     id: "compare-branches",
-    label: "Compare Branches",
+    label: "Branches Comparison",
     icon: <GitCompare className="w-5 h-5" />,
     path: "/dashboard/compare-branches",
   },
   {
-    id: "competitors",
-    label: "Competitors",
-    icon: <Target className="w-5 h-5" />,
-    path: "/dashboard/competitors",
-  },
-  {
     id: "departments",
-    label: "Departments",
+    label: "Geographical intelligence",
     icon: <Users className="w-5 h-5" />,
     path: "/dashboard/departments",
   },
+  {
+    id: "competitors",
+    label: "National Intelligence",
+    icon: <Target className="w-5 h-5" />,
+    path: "/dashboard/competitors",
+  },
+
   {
     id: "reports-alerts",
     label: "Reports & Alerts",

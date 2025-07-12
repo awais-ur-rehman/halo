@@ -99,20 +99,43 @@ export const GoogleMap = ({
 
       leafletMapRef.current = map;
 
+      // Enhanced user location marker with animated glow
       const userIcon = window.L.divIcon({
         className: "user-location-marker",
         html: `
           <div style="
-            width: 16px; 
-            height: 16px; 
-            background: linear-gradient(135deg, #3B82F6, #1D4ED8); 
-            border: 2px solid white; 
-            border-radius: 50%; 
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25), 0 2px 8px rgba(59, 130, 246, 0.15);
-          "></div>
+            position: relative;
+            width: 20px; 
+            height: 20px;
+          ">
+            <div style="
+              position: absolute;
+              width: 20px; 
+              height: 20px; 
+              background: linear-gradient(135deg, #FF6B6B, #FF8E53, #FF6B9D); 
+              border: 3px solid white; 
+              border-radius: 50%; 
+              box-shadow: 
+                0 0 0 6px rgba(255, 107, 107, 0.2),
+                0 0 0 12px rgba(255, 107, 107, 0.1),
+                0 4px 12px rgba(255, 107, 107, 0.3);
+              animation: userPulse 2s ease-in-out infinite;
+            "></div>
+            <div style="
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: 8px;
+              height: 8px;
+              background: white;
+              border-radius: 50%;
+              box-shadow: 0 0 4px rgba(0,0,0,0.2);
+            "></div>
+          </div>
         `,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
       });
 
       window.L.marker([userLocation.lat, userLocation.lng], {
@@ -129,43 +152,53 @@ export const GoogleMap = ({
 
   const createCustomIcon = (type: Branch["type"], status: Branch["status"]) => {
     let icon = "🏦";
-    let bgColor = "59, 130, 246"; // blue
-    let borderColor = "59, 130, 246";
+    let gradientColors = ["#6366F1", "#8B5CF6"]; // indigo to purple
+    let shadowColor = "99, 102, 241";
 
     if (type === "atm") {
       icon = "🏧";
-      bgColor = "16, 185, 129"; // emerald
-      borderColor = "16, 185, 129";
+      gradientColors = ["#10B981", "#06D6A0"]; // emerald to teal
+      shadowColor = "16, 185, 129";
     }
     if (type === "main") {
       icon = "🏛️";
-      bgColor = "139, 92, 246"; // violet
-      borderColor = "139, 92, 246";
+      gradientColors = ["#8B5CF6", "#EC4899"]; // violet to pink
+      shadowColor = "139, 92, 246";
     }
 
-    const opacity = status === "active" ? "0.18" : "0.08";
-    const borderOpacity = status === "active" ? "0.4" : "0.2";
+    const isActive = status === "active";
+    const opacity = isActive ? "0.95" : "0.6";
+    const size = isActive ? "36px" : "32px";
+    const shadowIntensity = isActive ? "0.4" : "0.2";
 
     return window.L.divIcon({
       className: "custom-marker",
       html: `
         <div style="
-          width: 32px; 
-          height: 32px; 
-          background: rgba(${bgColor}, ${opacity}); 
-          border: 1px solid rgba(${borderColor}, ${borderOpacity});
+          width: ${size}; 
+          height: ${size}; 
+          background: linear-gradient(135deg, ${gradientColors[0]}, ${
+        gradientColors[1]
+      }); 
+          border: 2px solid white;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 14px;
-          transition: all 0.2s ease;
+          font-size: ${isActive ? "16px" : "14px"};
+          opacity: ${opacity};
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           backdrop-filter: blur(2px);
+          box-shadow: 
+            0 0 0 4px rgba(${shadowColor}, 0.2),
+            0 4px 12px rgba(${shadowColor}, ${shadowIntensity}),
+            0 2px 6px rgba(0, 0, 0, 0.1);
+          ${isActive ? "animation: markerGlow 3s ease-in-out infinite;" : ""}
         ">${icon}</div>
       `,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -16],
+      iconSize: [parseInt(size), parseInt(size)],
+      iconAnchor: [parseInt(size) / 2, parseInt(size) / 2],
+      popupAnchor: [0, -parseInt(size) / 2],
     });
   };
 
@@ -185,17 +218,65 @@ export const GoogleMap = ({
         { icon }
       ).addTo(leafletMapRef.current);
 
+      // Enhanced popup with colorful styling
+      const statusColor = branch.status === "active" ? "#10B981" : "#F59E0B";
+      const typeColor =
+        branch.type === "main"
+          ? "#8B5CF6"
+          : branch.type === "atm"
+          ? "#06D6A0"
+          : "#6366F1";
+
       const popupContent = `
-        <div style="font-family: system-ui; padding: 8px;">
-          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937;">
-            ${branch.name}
-          </h3>
-          <p style="margin: 0 0 6px 0; font-size: 13px; color: #6b7280;">
-            ${branch.address}
+        <div style="font-family: system-ui; padding: 12px; background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);">
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <div style="
+              width: 8px; 
+              height: 8px; 
+              background: ${typeColor}; 
+              border-radius: 50%; 
+              margin-right: 8px;
+              box-shadow: 0 0 8px ${typeColor}50;
+            "></div>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #1f2937; background: linear-gradient(135deg, #1f2937, #374151); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              ${branch.name}
+            </h3>
+          </div>
+          <p style="margin: 0 0 6px 0; font-size: 13px; color: #6b7280; line-height: 1.4;">
+            📍 ${branch.address}
           </p>
-          <p style="margin: 0; font-size: 13px; color: #374151;">
-            ${branch.workingHours}
+          <p style="margin: 0 0 8px 0; font-size: 13px; color: #374151; line-height: 1.4;">
+            🕒 ${branch.workingHours}
           </p>
+          <div style="display: flex; align-items: center;">
+            <div style="
+              padding: 2px 8px; 
+              background: linear-gradient(135deg, ${statusColor}20, ${statusColor}10); 
+              border: 1px solid ${statusColor}40; 
+              border-radius: 12px; 
+              font-size: 11px; 
+              font-weight: 500; 
+              color: ${statusColor}; 
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            ">
+              ${branch.status}
+            </div>
+            <div style="
+              margin-left: 8px;
+              padding: 2px 8px; 
+              background: linear-gradient(135deg, ${typeColor}20, ${typeColor}10); 
+              border: 1px solid ${typeColor}40; 
+              border-radius: 12px; 
+              font-size: 11px; 
+              font-weight: 500; 
+              color: ${typeColor}; 
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            ">
+              ${branch.type}
+            </div>
+          </div>
         </div>
       `;
 
@@ -212,16 +293,21 @@ export const GoogleMap = ({
 
   if (mapError) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-red-50 rounded-lg border border-red-200">
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-50 via-pink-50 to-orange-50 rounded-lg border-2 border-red-200">
         <div className="text-center p-6">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-red-900 mb-2">Map Error</h3>
+          <div className="relative">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <div className="absolute inset-0 w-12 h-12 bg-red-500 rounded-full opacity-20 animate-ping mx-auto"></div>
+          </div>
+          <h3 className="text-lg font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            Map Error
+          </h3>
           <p className="text-red-700 mb-4 max-w-md">{mapError}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
-            Reload Page
+            🔄 Reload Page
           </button>
         </div>
       </div>
@@ -230,14 +316,17 @@ export const GoogleMap = ({
 
   if (!userLocation) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg">
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-lg">
         <div className="text-center">
-          <Navigation className="w-12 h-12 text-blue-500 mx-auto mb-4 animate-pulse" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Getting your location...
+          <div className="relative">
+            <Navigation className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+            <div className="absolute inset-0 w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-20 animate-pulse mx-auto"></div>
+          </div>
+          <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            🌍 Getting your location...
           </h3>
           <p className="text-gray-600">
-            Please allow location access to view nearby branches
+            📍 Please allow location access to view nearby branches
           </p>
         </div>
       </div>
@@ -248,48 +337,54 @@ export const GoogleMap = ({
     <div className="relative w-full h-full">
       <style>{`
         .leaflet-container {
-          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+          background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f3e5f5 100%);
           font-family: system-ui, -apple-system, sans-serif;
         }
 
         .dark .leaflet-container {
-          background: linear-gradient(135deg, #0a0a0a 0%, #111827 100%);
+          background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
         }
 
         .leaflet-tile-pane {
-          filter: contrast(1.05) brightness(0.97) saturate(1.02);
+          filter: contrast(1.1) brightness(0.95) saturate(1.1) hue-rotate(5deg);
         }
 
         .dark .leaflet-tile-pane {
-          filter: contrast(1.2) brightness(0.85) saturate(0.8) hue-rotate(200deg);
+          filter: contrast(1.3) brightness(0.8) saturate(0.9) hue-rotate(200deg);
         }
 
         .leaflet-control-zoom {
           border: none;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
-          border-radius: 8px;
+          box-shadow: 
+            0 8px 32px rgba(59, 130, 246, 0.15), 
+            0 4px 16px rgba(139, 92, 246, 0.1),
+            0 1px 3px rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
           overflow: hidden;
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+          backdrop-filter: blur(16px);
+          border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .dark .leaflet-control-zoom {
-          background: rgba(17, 24, 39, 0.95);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
-          border: 1px solid rgba(75, 85, 99, 0.2);
+          background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.95) 100%);
+          box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.4), 
+            0 4px 16px rgba(59, 130, 246, 0.2),
+            0 1px 3px rgba(0, 0, 0, 0.3);
+          border: 2px solid rgba(75, 85, 99, 0.3);
         }
 
         .leaflet-control-zoom a {
           background: transparent;
           color: #4b5563;
           border: none;
-          font-weight: 500;
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
-          font-size: 14px;
-          transition: all 0.2s ease;
+          font-weight: 600;
+          width: 34px;
+          height: 34px;
+          line-height: 34px;
+          font-size: 16px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .dark .leaflet-control-zoom a {
@@ -297,28 +392,35 @@ export const GoogleMap = ({
         }
 
         .leaflet-control-zoom a:hover {
-          background: rgba(59, 130, 246, 0.1);
+          background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
           color: #1e40af;
+          transform: scale(1.05);
         }
 
         .dark .leaflet-control-zoom a:hover {
-          background: rgba(59, 130, 246, 0.15);
+          background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
           color: #93c5fd;
         }
 
         .leaflet-popup-content-wrapper {
-          background: rgba(255, 255, 255, 0.98);
-          border-radius: 10px;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.05);
-          border: 1px solid rgba(0, 0, 0, 0.06);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+          border-radius: 16px;
+          box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.15), 
+            0 8px 16px rgba(59, 130, 246, 0.1),
+            0 4px 8px rgba(139, 92, 246, 0.05);
+          border: 2px solid rgba(255, 255, 255, 0.3);
           padding: 0;
-          backdrop-filter: blur(16px);
+          backdrop-filter: blur(20px);
         }
 
         .dark .leaflet-popup-content-wrapper {
-          background: rgba(17, 24, 39, 0.98);
-          border: 1px solid rgba(75, 85, 99, 0.2);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.3);
+          background: linear-gradient(135deg, rgba(17, 24, 39, 0.98) 0%, rgba(31, 41, 55, 0.98) 100%);
+          border: 2px solid rgba(75, 85, 99, 0.3);
+          box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.6), 
+            0 8px 16px rgba(59, 130, 246, 0.2),
+            0 4px 8px rgba(139, 92, 246, 0.1);
         }
 
         .leaflet-popup-content {
@@ -331,91 +433,115 @@ export const GoogleMap = ({
         }
 
         .leaflet-popup-tip {
-          background: rgba(255, 255, 255, 0.98);
-          border: 1px solid rgba(0, 0, 0, 0.06);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+          border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .dark .leaflet-popup-tip {
-          background: rgba(17, 24, 39, 0.98);
-          border: 1px solid rgba(75, 85, 99, 0.2);
+          background: linear-gradient(135deg, rgba(17, 24, 39, 0.98) 0%, rgba(31, 41, 55, 0.98) 100%);
+          border: 2px solid rgba(75, 85, 99, 0.3);
         }
 
         .leaflet-popup-close-button {
-          background: rgba(239, 68, 68, 0.1);
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(236, 72, 153, 0.15));
           color: #dc2626;
           border-radius: 50%;
-          width: 20px;
-          height: 20px;
-          font-size: 12px;
+          width: 24px;
+          height: 24px;
+          font-size: 14px;
           font-weight: bold;
-          right: 6px;
-          top: 6px;
-          transition: all 0.2s ease;
-          border: 1px solid rgba(239, 68, 68, 0.2);
+          right: 8px;
+          top: 8px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 2px solid rgba(239, 68, 68, 0.3);
         }
 
         .dark .leaflet-popup-close-button {
-          background: rgba(239, 68, 68, 0.15);
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(236, 72, 153, 0.2));
           color: #f87171;
-          border-color: rgba(239, 68, 68, 0.3);
+          border-color: rgba(239, 68, 68, 0.4);
         }
 
         .leaflet-popup-close-button:hover {
-          background: rgba(239, 68, 68, 0.2);
-          transform: scale(1.05);
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(236, 72, 153, 0.3));
+          transform: scale(1.1) rotate(90deg);
         }
 
         .dark .leaflet-popup-close-button:hover {
-          background: rgba(239, 68, 68, 0.25);
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(236, 72, 153, 0.4));
         }
 
         .custom-marker {
-          transition: all 0.2s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .custom-marker:hover {
-          transform: scale(1.15);
+          transform: scale(1.2) rotate(5deg);
         }
 
         .custom-marker:hover > div {
-          background: rgba(59, 130, 246, 0.3) !important;
-          border-color: rgba(59, 130, 246, 0.6) !important;
-          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+          box-shadow: 
+            0 0 0 6px rgba(59, 130, 246, 0.3) !important,
+            0 8px 24px rgba(59, 130, 246, 0.4) !important,
+            0 4px 12px rgba(0, 0, 0, 0.2) !important;
         }
 
         .user-location-marker {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          z-index: 1000;
         }
 
-        @keyframes pulse {
+        @keyframes userPulse {
           0%, 100% {
-            opacity: 1;
+            box-shadow: 
+              0 0 0 6px rgba(255, 107, 107, 0.2),
+              0 0 0 12px rgba(255, 107, 107, 0.1),
+              0 4px 12px rgba(255, 107, 107, 0.3);
           }
           50% {
-            opacity: 0.8;
+            box-shadow: 
+              0 0 0 10px rgba(255, 107, 107, 0.3),
+              0 0 0 20px rgba(255, 107, 107, 0.15),
+              0 8px 20px rgba(255, 107, 107, 0.4);
           }
+        }
+
+        @keyframes markerGlow {
+          0%, 100% {
+            filter: brightness(1) saturate(1);
+          }
+          50% {
+            filter: brightness(1.2) saturate(1.3);
+          }
+        }
+
+        @keyframes floatAnimation {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-2px); }
         }
       `}</style>
 
       <div ref={mapRef} className="w-full h-full rounded-lg" />
 
       {loading && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center rounded-lg z-[1000]">
-          <div className="flex items-center space-x-3 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg border border-gray-200/50">
-            <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />
-            <span className="text-gray-700 font-medium">
-              Loading branches...
+        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-50/90 to-purple-50/90 backdrop-blur-sm flex items-center justify-center rounded-lg z-[1000]">
+          <div className="flex items-center space-x-3 bg-gradient-to-r from-white/95 to-blue-50/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border-2 border-white/50">
+            <RefreshCw className="w-6 h-6 text-blue-500 animate-spin" />
+            <span className="text-gray-700 font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              ✨ Loading branches...
             </span>
           </div>
         </div>
       )}
 
       {mapLoaded && (
-        <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-lg px-3 py-2 shadow-lg z-[1000]">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {branches.length} locations
+        <div className="absolute bottom-4 left-4 bg-gradient-to-r from-white/95 via-blue-50/95 to-purple-50/95 dark:from-gray-900/95 dark:via-blue-900/95 dark:to-purple-900/95 backdrop-blur-sm border-2 border-white/50 dark:border-gray-700/50 rounded-2xl px-4 py-3 shadow-2xl z-[1000] animate-pulse">
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="w-3 h-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"></div>
+              <div className="absolute inset-0 w-3 h-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full animate-ping opacity-50"></div>
+            </div>
+            <span className="text-sm font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              🎯 {branches.length} locations found
             </span>
           </div>
         </div>
