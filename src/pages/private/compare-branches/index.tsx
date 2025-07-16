@@ -37,11 +37,11 @@ const ComparisonCard = ({ branch, onSelect, title }: ComparisonCardProps) => {
   if (!branch) {
     return (
       <div
-        className="bg-white dark:bg-black border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center min-h-[300px] transition-colors duration-200 hover:border-orange-400 dark:hover:border-orange-500 hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer"
+        className="bg-white dark:bg-black border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center min-h-[300px] transition-colors duration-200 hover:border-green-400 dark:hover:border-green-500 hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer"
         onClick={onSelect}
       >
-        <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-4">
-          <Plus className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+        <div className="p-4 bg-green-100 dark:bg-green-900/30 rounded-full mb-4">
+          <Plus className="w-8 h-8 text-green-600 dark:text-green-400" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           {title}
@@ -72,8 +72,8 @@ const ComparisonCard = ({ branch, onSelect, title }: ComparisonCardProps) => {
     <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm transition-all duration-200 hover:shadow-md">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-            <Building2 className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+          <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+            <Building2 className="w-6 h-6 text-green-600 dark:text-green-400" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
@@ -86,14 +86,14 @@ const ComparisonCard = ({ branch, onSelect, title }: ComparisonCardProps) => {
         </div>
         <button
           onClick={onSelect}
-          className="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 text-sm font-medium"
+          className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm font-medium"
         >
           Change
         </button>
       </div>
 
       <div className="text-center mb-4">
-        <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+        <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
           {branch.overall_score}
         </div>
         <span
@@ -167,7 +167,7 @@ const MetricComparison = ({
   return (
     <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg p-4">
       <div className="flex items-center space-x-2 mb-3">
-        <div className="text-orange-600 dark:text-orange-400">{icon}</div>
+        <div className="text-green-600 dark:text-green-400">{icon}</div>
         <h4 className="font-medium text-gray-900 dark:text-white">{title}</h4>
       </div>
 
@@ -224,7 +224,7 @@ const SentimentComparison = ({
   return (
     <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-        <MessageSquare className="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+        <MessageSquare className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
         Customer Sentiment Analysis
       </h3>
 
@@ -306,7 +306,7 @@ const IssuesComparison = ({ branch1, branch2 }: IssuesComparisonProps) => {
   return (
     <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-        <AlertTriangle className="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+        <AlertTriangle className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
         Issues & Performance Analysis
       </h3>
 
@@ -322,13 +322,11 @@ const IssuesComparison = ({ branch1, branch2 }: IssuesComparisonProps) => {
               </div>
               <p className="text-xs text-red-600 dark:text-red-400">Critical</p>
             </div>
-            <div className="text-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-              <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
+            <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div className="text-lg font-bold text-green-600 dark:text-green-400">
                 {branch1.issues.high_count}
               </div>
-              <p className="text-xs text-orange-600 dark:text-orange-400">
-                High
-              </p>
+              <p className="text-xs text-green-600 dark:text-green-400">High</p>
             </div>
             <div className="text-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
               <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
@@ -358,13 +356,11 @@ const IssuesComparison = ({ branch1, branch2 }: IssuesComparisonProps) => {
               </div>
               <p className="text-xs text-red-600 dark:text-red-400">Critical</p>
             </div>
-            <div className="text-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-              <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
+            <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div className="text-lg font-bold text-green-600 dark:text-green-400">
                 {branch2.issues.high_count}
               </div>
-              <p className="text-xs text-orange-600 dark:text-orange-400">
-                High
-              </p>
+              <p className="text-xs text-green-600 dark:text-green-400">High</p>
             </div>
             <div className="text-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
               <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
@@ -410,7 +406,7 @@ const PerformanceRecommendations = ({
   return (
     <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-        <Target className="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+        <Target className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
         Performance Insights & Recommendations
       </h3>
 
@@ -429,11 +425,11 @@ const PerformanceRecommendations = ({
           </p>
         </div>
 
-        <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-          <h4 className="font-medium text-orange-800 dark:text-orange-400 mb-2">
+        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <h4 className="font-medium text-green-800 dark:text-green-400 mb-2">
             Key Success Factors from {betterBranch.branch_name}:
           </h4>
-          <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
+          <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
             <li>
               • Superior service quality score:{" "}
               {betterBranch.performance_metrics.service_quality}%
@@ -525,7 +521,7 @@ export const CompareBranchesPage = () => {
       <div className="p-6 bg-white dark:bg-black min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
             <span className="ml-3 text-lg font-medium text-gray-600 dark:text-gray-400">
               Loading branches...
             </span>

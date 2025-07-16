@@ -84,7 +84,7 @@ export const ControlCenterPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
             <button
               onClick={refreshBranches}
-              className="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white rounded-lg transition-colors duration-200"
+              className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors duration-200"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Try Again
@@ -371,7 +371,7 @@ export const ControlCenterPage = () => {
                       {filteredBranches.length} locations found
                     </p>
                     {selectedBranch && (
-                      <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                      <p className="text-sm text-green-600 dark:text-green-400 mt-1">
                         {selectedBranch.name} selected
                       </p>
                     )}
@@ -390,14 +390,14 @@ export const ControlCenterPage = () => {
                     placeholder="Search branches..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-400/50 dark:focus:ring-orange-500/50 focus:border-transparent backdrop-blur-sm"
+                    className="w-full px-4 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-400/50 dark:focus:ring-green-500/50 focus:border-transparent backdrop-blur-sm"
                   />
 
                   <div className="flex space-x-2">
                     <select
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value as any)}
-                      className="flex-1 px-3 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-400/50 dark:focus:ring-orange-500/50 backdrop-blur-sm text-sm"
+                      className="flex-1 px-3 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-400/50 dark:focus:ring-green-500/50 backdrop-blur-sm text-sm"
                     >
                       <option value="all">All Status</option>
                       <option value="active">Active</option>
@@ -408,7 +408,7 @@ export const ControlCenterPage = () => {
                     <select
                       value={typeFilter}
                       onChange={(e) => setTypeFilter(e.target.value as any)}
-                      className="flex-1 px-3 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-400/50 dark:focus:ring-orange-500/50 backdrop-blur-sm text-sm"
+                      className="flex-1 px-3 py-2 bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/20 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-400/50 dark:focus:ring-green-500/50 backdrop-blur-sm text-sm"
                     >
                       <option value="all">All Types</option>
                       <option value="main">Main</option>
@@ -436,7 +436,7 @@ export const ControlCenterPage = () => {
                       onClick={() => handleBranchSelect(branch)}
                       className={`p-4 border-b border-white/10 dark:border-white/5 cursor-pointer hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 ${
                         selectedBranch?.id === branch.id
-                          ? "bg-orange-400/20 dark:bg-orange-600/20 border-orange-400/30 dark:border-orange-500/30"
+                          ? "bg-green-400/20 dark:bg-green-600/20 border-green-400/30 dark:border-green-500/30"
                           : ""
                       }`}
                       style={{
@@ -511,7 +511,7 @@ export const ControlCenterPage = () => {
 
                 {loading && (
                   <div className="p-8 text-center">
-                    <RefreshCw className="w-8 h-8 text-orange-500 dark:text-orange-400 animate-spin mx-auto mb-4 filter drop-shadow-sm" />
+                    <RefreshCw className="w-8 h-8 text-green-500 dark:text-green-400 animate-spin mx-auto mb-4 filter drop-shadow-sm" />
                     <p className="text-gray-600 dark:text-gray-400">
                       Loading branches...
                     </p>

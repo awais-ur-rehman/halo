@@ -4,13 +4,13 @@ import type { LoginFormData, AuthResponse } from '../../types/auth';
 
 const MOCK_USER = {
   id: '1',
-  email: 'admin@ubl.com',
+  email: 'admin@hbl.com',
   name: 'Admin User'
 };
 
 const MOCK_CREDENTIALS = {
-  email: 'admin@ubl.com',
-  password: 'Ubl@1234'
+  email: 'admin@hbl.com',
+  password: 'Hbl@1234'
 };
 
 const mockLoginApi = async (credentials: LoginFormData): Promise<AuthResponse> => {

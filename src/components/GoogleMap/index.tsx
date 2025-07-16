@@ -293,7 +293,7 @@ export const GoogleMap = ({
 
   if (mapError) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-50 via-pink-50 to-orange-50 rounded-lg border-2 border-red-200">
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-50 via-pink-50 to-green-50 rounded-lg border-2 border-red-200">
         <div className="text-center p-6">
           <div className="relative">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />

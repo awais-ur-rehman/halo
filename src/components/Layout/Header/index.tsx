@@ -196,7 +196,7 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
           <div className="flex items-center space-x-4">
             <button
               type="button"
-              className="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md p-2 transition-colors duration-200"
+              className="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md p-2 transition-colors duration-200"
               onClick={onToggleSidebar}
             >
               <Menu className="h-5 w-5" />
@@ -212,7 +212,7 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
                   {breadcrumb.path ? (
                     <button
                       onClick={() => navigate(breadcrumb.path!)}
-                      className="text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 font-medium transition-colors duration-200"
+                      className="text-gray-500 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 font-medium transition-colors duration-200"
                     >
                       {breadcrumb.label}
                     </button>
@@ -236,7 +236,7 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
               <input
                 type="text"
                 placeholder="Search..."
-                className="block w-64 pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-800 rounded-lg text-sm placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-black text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:border-transparent transition-colors duration-200"
+                className="block w-64 pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-800 rounded-lg text-sm placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-black text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:border-transparent transition-colors duration-200"
               />
             </div>
 
@@ -244,7 +244,7 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
             <div className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md transition-colors duration-200"
+                className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md transition-colors duration-200"
               >
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
@@ -287,7 +287,7 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
                     ))}
                   </div>
                   <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <button className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition-colors duration-200">
+                    <button className="text-sm text-green-600 dark:text-green-400 hover:text-green-500 dark:hover:text-green-300 font-medium transition-colors duration-200">
                       View all notifications
                     </button>
                   </div>
@@ -298,7 +298,7 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md transition-all duration-200 hover:scale-105"
+              className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md transition-all duration-200 hover:scale-105"
               title={
                 isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
               }
@@ -314,9 +314,9 @@ export const Header = ({ onToggleSidebar }: HeaderProps) => {
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="flex items-center space-x-2 p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md transition-colors duration-200"
+                className="flex items-center space-x-2 p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md transition-colors duration-200"
               >
-                <div className="h-8 w-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-sm">
+                <div className="h-8 w-8 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-sm">
                   <User className="h-4 w-4 text-white" />
                 </div>
                 <span className="hidden md:block text-sm font-medium text-gray-900 dark:text-white">

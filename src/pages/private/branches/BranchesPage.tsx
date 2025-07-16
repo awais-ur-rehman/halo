@@ -1,4 +1,3 @@
-// src/pages/private/branches/BranchesPage.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -55,11 +54,11 @@ const BranchCard = ({ branch }: { branch: BranchScorecard }) => {
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-            <Building2 className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+          <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+            <Building2 className="w-5 h-5 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+            <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
               {branch.branch_name}
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -273,7 +272,7 @@ export const BranchesPage = () => {
       <div className="p-6 bg-gray-50 dark:bg-black min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center py-12">
-            <RefreshCw className="w-8 h-8 text-orange-500 animate-spin" />
+            <RefreshCw className="w-8 h-8 text-green-500 animate-spin" />
             <span className="ml-3 text-lg font-medium text-gray-600 dark:text-gray-400">
               Loading branches...
             </span>
@@ -295,7 +294,7 @@ export const BranchesPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
             <button
               onClick={refreshBranches}
-              className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
             >
               <RefreshCw className="w-4 h-4 mr-2 inline" />
               Try Again
@@ -374,7 +373,7 @@ export const BranchesPage = () => {
                   placeholder="Search branches..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/20 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/20 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
             </div>

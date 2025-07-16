@@ -1,0 +1,507 @@
+{
+  "metadata": {
+    "branch_id": "BR_20250712_0743",
+    "branch_name": "Sample Branch",
+    "analysis_period": {
+      "start": "2025-06-12T07:43:24.800880",
+      "end": "2025-07-12T07:43:24.800887"
+    },
+    "total_reviews_analyzed": 10,
+    "last_updated": "2025-07-12T07:43:24.805323",
+    "data_quality_score": 0.832
+  },
+  "summary_metrics": {
+    "overall_score": 5.4,
+    "performance_level": "average",
+    "google_rating_average": 3.0,
+    "sentiment_positive_percentage": 40.0,
+    "customer_satisfaction": 4.73,
+    "high_risk_customers": 4,
+    "urgent_actions_needed": 0
+  },
+  "data_cards": {
+    "overall_performance": {
+      "title": "Overall Performance Summary",
+      "alert_level": "warning",
+      "metrics": {
+        "overall_score": 5.4,
+        "performance_level": "average",
+        "total_reviews": 10,
+        "analysis_period": "10 reviews analyzed",
+        "authenticity_confidence": 0.832,
+        "trend": "improving",
+        "score_distribution": {
+          "counts": {
+            "excellent": 4,
+            "good": 2,
+            "average": 0,
+            "poor": 3,
+            "critical": 1
+          },
+          "percentages": {
+            "excellent": 40.0,
+            "good": 20.0,
+            "average": 0.0,
+            "poor": 30.0,
+            "critical": 10.0
+          },
+          "total_reviews": 10
+        },
+        "google_rating_average": 3.0,
+        "review_volume_trend": "stable",
+        "performance_percentile": 67.0
+      }
+    },
+    "staff_performance": {
+      "title": "Staff Performance Metrics",
+      "alert_level": "critical",
+      "metrics": {
+        "courtesy": 5.4,
+        "professionalism": 5.4,
+        "competence": 5.4,
+        "helpfulness": 2.7,
+        "responsiveness": 2.4,
+        "availability": 0.9,
+        "overall_staff_score": 3.7,
+        "issues_count": 0,
+        "compliments_count": 17,
+        "critical_issues": 21,
+        "staff_performance_trend": "improving",
+        "top_performing_aspects": ["courtesy", "professionalism", "competence"],
+        "improvement_needed_aspects": [
+          "availability",
+          "responsiveness",
+          "helpfulness"
+        ],
+        "staff_training_priority": [
+          "courtesy",
+          "professionalism",
+          "competence",
+          "helpfulness",
+          "responsiveness",
+          "availability"
+        ]
+      }
+    },
+    "management_effectiveness": {
+      "title": "Management Effectiveness",
+      "alert_level": "warning",
+      "metrics": {
+        "management_rating": 0.8,
+        "leadership_quality": 0.8,
+        "problem_resolution": 0,
+        "staff_management": 0.8,
+        "intervention_cases": 4,
+        "escalation_rate": 40.0,
+        "complaints": 4,
+        "overall_management_score": 0.8,
+        "management_effectiveness_level": "critical",
+        "critical_management_issues": []
+      }
+    },
+    "operational_efficiency": {
+      "title": "Operational Efficiency Dashboard",
+      "alert_level": "normal",
+      "metrics": {
+        "avg_wait_time": 10.0,
+        "wait_time_satisfaction": 9.0,
+        "queue_management": 9.0,
+        "token_system": 9.0,
+        "counter_efficiency": 5.0,
+        "process_speed": 5.4,
+        "hours_satisfaction": 2.44,
+        "system_reliability": 5.4,
+        "wait_time_complaints_percentage": 0.0,
+        "operational_issues_count": 1,
+        "overall_operational_score": 6.47
+      }
+    },
+    "service_quality": {
+      "title": "Service Quality Analysis",
+      "alert_level": "normal",
+      "metrics": {
+        "account_services": 5.7,
+        "transaction_services": 4.0,
+        "specialized_services": 4.88,
+        "overall_service_quality": 4.86,
+        "most_mentioned_services": [
+          "account_opening",
+          "cash_withdrawal",
+          "loan_services",
+          "account_maintenance",
+          "remittances",
+          "card_services",
+          "cash_deposit",
+          "fund_transfer",
+          "check_services",
+          "balance_inquiry"
+        ],
+        "highest_satisfaction_services": [
+          ["balance_inquiry", 8.5],
+          ["cash_deposit", 7.0],
+          ["account_maintenance", 6.33],
+          ["loan_services", 5.5],
+          ["check_services", 5.0]
+        ],
+        "lowest_satisfaction_services": [
+          ["cash_withdrawal", 2.0],
+          ["remittances", 4.0],
+          ["account_opening", 4.2],
+          ["card_services", 4.5],
+          ["check_services", 5.0]
+        ],
+        "service_issue_frequency": {
+          "remittances": 1
+        },
+        "average_service_satisfaction": 5.23
+      }
+    },
+    "facility_infrastructure": {
+      "title": "Facility & Infrastructure",
+      "alert_level": "normal",
+      "metrics": {
+        "cleanliness": 0.7,
+        "comfort": 2.0,
+        "space": 2.7,
+        "accessibility": 0.0,
+        "atm_availability": 3.1,
+        "digital_services": 0.0,
+        "connectivity": 0.0,
+        "security_rating": 0.0,
+        "overall_facility_score": 1.06,
+        "safety_concerns_count": 0,
+        "upgrade_needs": ["System reliability", "Space expansion"]
+      }
+    },
+    "customer_experience": {
+      "title": "Customer Experience Journey",
+      "alert_level": "warning",
+      "metrics": {
+        "first_impression": 3.4,
+        "overall_satisfaction": 5.4,
+        "recommendation_likelihood": 5.4,
+        "overall_customer_experience": 4.73,
+        "repeat_visit_intent_percentage": 60.0,
+        "brand_advocacy_percentage": 40.0,
+        "switching_intent_percentage": 40.0,
+        "loyalty_indicators": 50.0
+      }
+    },
+    "sentiment_analysis": {
+      "title": "Sentiment & Emotional Analysis",
+      "alert_level": "warning",
+      "metrics": {
+        "positive": 40.0,
+        "negative": 40.0,
+        "neutral": 10.0,
+        "mixed": 10.0,
+        "avg_sentiment_score": 0.013,
+        "emotional_intensity": 2.6,
+        "communication_effectiveness": 5.4,
+        "dominant_emotions": [
+          "frustration",
+          "anger",
+          "satisfaction",
+          "appreciation",
+          "neutral"
+        ],
+        "sentiment_volatility": 0.667
+      }
+    },
+    "business_impact": {
+      "title": "Business Impact & Risk Assessment",
+      "alert_level": "normal",
+      "metrics": {
+        "high_risk": 4,
+        "medium_risk": 2,
+        "low_risk": 4,
+        "revenue_impact": "Medium",
+        "word_of_mouth_risk": 40.0,
+        "positive_word_of_mouth": 40.0,
+        "reputation_damage": 4.6,
+        "urgent_actions": 0,
+        "management_intervention_needed": 4,
+        "business_risk_assessment": "Critical"
+      }
+    },
+    "reviewer_credibility": {
+      "title": "Reviewer Credibility & Data Quality",
+      "alert_level": "normal",
+      "metrics": {
+        "avg_level": 4.82,
+        "local_guides": 30.0,
+        "high_credibility": 20.0,
+        "authenticity_score": 0.832,
+        "avg_reviews_per_reviewer": 103.4,
+        "data_quality": 0.832,
+        "reviewer_diversity_index": 0.418,
+        "data_reliability_assessment": {
+          "overall_reliability": "High",
+          "sample_size_adequacy": "Limited",
+          "reviewer_bias_risk": "Low",
+          "data_freshness": "Current"
+        }
+      }
+    }
+  },
+  "chart_data": {
+    "performance_radar": [
+      {
+        "subject": "Staff Performance",
+        "score": 7.8,
+        "fullMark": 10
+      },
+      {
+        "subject": "Management",
+        "score": 6.8,
+        "fullMark": 10
+      },
+      {
+        "subject": "Operations",
+        "score": 7.1,
+        "fullMark": 10
+      },
+      {
+        "subject": "Service Quality",
+        "score": 7.9,
+        "fullMark": 10
+      },
+      {
+        "subject": "Facility",
+        "score": 7.4,
+        "fullMark": 10
+      },
+      {
+        "subject": "Customer Experience",
+        "score": 7.6,
+        "fullMark": 10
+      }
+    ],
+    "sentiment_pie": [
+      {
+        "name": "Positive",
+        "value": 58.3,
+        "color": "#10B981"
+      },
+      {
+        "name": "Negative",
+        "value": 22.1,
+        "color": "#EF4444"
+      },
+      {
+        "name": "Neutral",
+        "value": 15.8,
+        "color": "#6B7280"
+      },
+      {
+        "name": "Mixed",
+        "value": 3.8,
+        "color": "#F59E0B"
+      }
+    ],
+    "staff_performance_bar": [
+      {
+        "name": "Courtesy",
+        "score": 7.8
+      },
+      {
+        "name": "Professionalism",
+        "score": 7.5
+      },
+      {
+        "name": "Competence",
+        "score": 8.1
+      },
+      {
+        "name": "Helpfulness",
+        "score": 8.3
+      },
+      {
+        "name": "Responsiveness",
+        "score": 7.2
+      },
+      {
+        "name": "Availability",
+        "score": 7.6
+      }
+    ],
+    "risk_distribution": [
+      {
+        "name": "Low Risk",
+        "value": 149,
+        "color": "#10B981"
+      },
+      {
+        "name": "Medium Risk",
+        "value": 67,
+        "color": "#F59E0B"
+      },
+      {
+        "name": "High Risk",
+        "value": 31,
+        "color": "#EF4444"
+      }
+    ],
+    "service_heatmap": {
+      "services": [
+        "Cash Deposit",
+        "Fund Transfer",
+        "Account Inquiry",
+        "Loan Services",
+        "Card Services"
+      ],
+      "satisfaction_scores": [8.7, 7.3, 8.5, 5.8, 6.9],
+      "mention_frequency": [45, 38, 52, 12, 28]
+    },
+    "trend_lines": [
+      {
+        "month": "Jan",
+        "overall_score": 9.8,
+        "satisfaction": 7.1,
+        "efficiency": 6.5
+      },
+      {
+        "month": "Feb",
+        "overall_score": 7.0,
+        "satisfaction": 2.3,
+        "efficiency": 6.8
+      },
+      {
+        "month": "Mar",
+        "overall_score": 7.2,
+        "satisfaction": 7.6,
+        "efficiency": 8.1
+      },
+      {
+        "month": "Apr",
+        "overall_score": 2.1,
+        "satisfaction": 7.4,
+        "efficiency": 9.9
+      },
+      {
+        "month": "May",
+        "overall_score": 7.4,
+        "satisfaction": 3.8,
+        "efficiency": 1.3
+      },
+      {
+        "month": "Jun",
+        "overall_score": 9.2,
+        "satisfaction": 4.6,
+        "efficiency": 7.1
+      }
+    ]
+  },
+  "insights_and_recommendations": {
+    "top_strengths": [
+      "Strong staff helpfulness and competence",
+      "Excellent facility cleanliness standards",
+      "Reliable system infrastructure",
+      "High customer recommendation rates"
+    ],
+    "critical_weaknesses": [
+      "Excessive wait times during peak hours",
+      "Management effectiveness below standards",
+      "Specialized services underperforming",
+      "High customer retention risk"
+    ],
+    "immediate_actions": [
+      "Deploy additional staff during identified peak hours",
+      "Implement express service lanes for simple transactions",
+      "Address critical staff performance issues",
+      "Launch targeted retention campaign for high-risk customers",
+      "Conduct emergency management training session"
+    ],
+    "medium_term_improvements": [
+      "Upgrade digital service infrastructure",
+      "Implement comprehensive staff training program",
+      "Deploy advanced queue management system",
+      "Establish customer feedback monitoring system",
+      "Develop specialized services improvement plan"
+    ],
+    "long_term_strategic_recommendations": [
+      "Complete facility modernization project",
+      "Implement AI-powered customer service tools",
+      "Establish branch performance benchmarking system",
+      "Develop customer experience excellence program",
+      "Create integrated omnichannel service strategy"
+    ],
+    "priority_matrix": {
+      "high_impact_low_effort": [
+        "Staff redeployment during peak hours",
+        "Express service lane implementation"
+      ],
+      "high_impact_high_effort": [
+        "Digital infrastructure upgrade",
+        "Comprehensive facility modernization"
+      ],
+      "low_impact_low_effort": [
+        "Signage improvements",
+        "Minor process optimizations"
+      ],
+      "low_impact_high_effort": [
+        "Complete system overhaul",
+        "Extensive facility expansion"
+      ]
+    },
+    "success_metrics": {
+      "primary_kpis": {
+        "overall_branch_score": {
+          "target": 8.0,
+          "timeframe": "6 months"
+        },
+        "customer_satisfaction": {
+          "target": 8.5,
+          "timeframe": "3 months"
+        },
+        "wait_time_reduction": {
+          "target": "15 minutes",
+          "timeframe": "2 months"
+        }
+      },
+      "secondary_kpis": {
+        "staff_performance": {
+          "target": 8.0,
+          "timeframe": "4 months"
+        },
+        "operational_efficiency": {
+          "target": 7.5,
+          "timeframe": "3 months"
+        },
+        "customer_retention": {
+          "target": "95%",
+          "timeframe": "6 months"
+        }
+      }
+    },
+    "implementation_roadmap": {
+      "phase_1_immediate": {
+        "duration": "1-2 weeks",
+        "focus": "Critical issue resolution",
+        "key_actions": [
+          "Staff redeployment",
+          "Express lanes",
+          "Management training"
+        ]
+      },
+      "phase_2_short_term": {
+        "duration": "1-3 months",
+        "focus": "Operational improvements",
+        "key_actions": [
+          "Staff training",
+          "Process optimization",
+          "Technology upgrades"
+        ]
+      },
+      "phase_3_long_term": {
+        "duration": "3-6 months",
+        "focus": "Strategic transformation",
+        "key_actions": [
+          "Facility modernization",
+          "Advanced systems",
+          "Excellence programs"
+        ]
+      }
+    }
+  }
+}

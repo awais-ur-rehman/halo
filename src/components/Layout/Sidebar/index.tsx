@@ -243,8 +243,8 @@ export const Sidebar = ({
             isCollapsed ? "px-4" : "px-6 pr-6"
           } py-3 text-sm font-medium transition-all duration-200 ${
             navIsActive || isActive
-              ? "text-orange-500 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 border-r-2 border-orange-500 dark:border-orange-400"
-              : "text-gray-700 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+              ? "text-green-500 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-r-2 border-green-500 dark:border-green-400"
+              : "text-gray-700 dark:text-gray-300 hover:text-green-500 dark:hover:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
           } group relative`
         }
         title={isCollapsed ? item.label : ""}
@@ -286,7 +286,7 @@ export const Sidebar = ({
           >
             {!isCollapsed && (
               <div className="flex items-center space-x-3">
-                <div className="h-8 w-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <div className="h-8 w-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">H</span>
                 </div>
                 <div>
@@ -297,14 +297,14 @@ export const Sidebar = ({
               </div>
             )}
             {isCollapsed && (
-              <div className="h-8 w-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+              <div className="h-8 w-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">H</span>
               </div>
             )}
 
             <button
               onClick={onToggleCollapse}
-              className={`hidden lg:block p-1.5 bg-orange-500 hover:bg-orange-600 text-white absolute rounded-full transition-all duration-200 transform hover:scale-105 ${
+              className={`hidden lg:block p-1.5 bg-green-500 hover:bg-green-600 text-white absolute rounded-full transition-all duration-200 transform hover:scale-105 ${
                 isCollapsed ? "left-[50px]" : "left-[240px]"
               }`}
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -321,7 +321,7 @@ export const Sidebar = ({
             <div className="px-6 py-3 border-b border-gray-200 dark:border-gray-700">
               <NavLink
                 to={backPath}
-                className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200"
+                className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 transition-colors duration-200"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>

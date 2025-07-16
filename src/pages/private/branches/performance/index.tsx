@@ -476,7 +476,7 @@ const SentimentPieChart = ({ branch }) => {
   return (
     <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-xl p-6 h-full">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-        <MessageSquare className="w-5 h-5 text-orange-500 mr-2" />
+        <MessageSquare className="w-5 h-5 text-green-500 mr-2" />
         Customer Sentiment Distribution
       </h3>
 
@@ -698,7 +698,7 @@ export const BranchPerformancePage = () => {
       <div className="p-6 bg-white dark:bg-black min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
             <span className="ml-3 text-lg font-medium text-gray-600 dark:text-gray-400">
               Loading performance data...
             </span>
@@ -731,8 +731,8 @@ export const BranchPerformancePage = () => {
       <div className="max-w-7xl mx-auto h-full flex flex-col">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
-            <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
-              <Building2 className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl">
+              <Building2 className="w-8 h-8 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -744,7 +744,7 @@ export const BranchPerformancePage = () => {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               {branch.overall_score}
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">

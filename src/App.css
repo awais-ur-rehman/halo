@@ -42,3 +42,8 @@
 } */
 
 @import "tailwindcss";
+
+.stroke-green-800 {
+  -webkit-text-stroke: 0.5px #065f46;
+  /* dark green */
+}
